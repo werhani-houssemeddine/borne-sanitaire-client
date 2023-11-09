@@ -6,7 +6,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:borne_sanitaire_client/models/auth_token.dart';
 
-import 'package:borne_sanitaire_client/Server/request.dart';
+import 'package:borne_sanitaire_client/Service/request.dart';
 
 Future<String> init() async {
   WidgetsFlutterBinding.ensureInitialized();
