@@ -2,6 +2,8 @@
 
 import 'dart:ui';
 
+import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
 Widget LandingScreen(BuildContext context) {
@@ -34,7 +36,7 @@ Widget _ButtonsContainer(BuildContext context) {
         height: 200,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20), color: Colors.white),
-        child: _Buttons()),
+        child: _Buttons(context)),
   )
       /*BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -42,12 +44,20 @@ Widget _ButtonsContainer(BuildContext context) {
       );
 }
 
-Widget _Buttons() {
+Widget _Buttons(BuildContext context) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 20),
     child: Column(
       children: [
-        Expanded(flex: 1, child: _Button(() => null, "LOGIN")),
+        Expanded(
+            flex: 1,
+            child: _Button(
+                () => {
+                      AutoRouter.of(context)
+                          .push(const LoginRoute())
+                          .then((value) => {})
+                    },
+                "LOGIN")),
         // const Expanded(flex: 1, child: SizedBox()),
         Expanded(flex: 1, child: _Button(() => null, "GET STARTED"))
       ],
