@@ -4,7 +4,7 @@ part 'auth_token.g.dart';
 @HiveType(typeId: 1)
 class AuthToken {
   @HiveField(0)
-  String? token;
+  String token;
 
   @HiveField(1)
   int? expiresIn;

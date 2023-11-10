@@ -17,7 +17,7 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AuthToken(
-      token: fields[0] as String?,
+      token: fields[0] as String,
       expiresIn: fields[1] as int?,
     );
   }
