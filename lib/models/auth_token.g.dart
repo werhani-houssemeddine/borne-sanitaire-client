@@ -18,15 +18,18 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
     };
     return AuthToken(
       token: fields[0] as String?,
+      expiresIn: fields[1] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AuthToken obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.token);
+      ..write(obj.token)
+      ..writeByte(1)
+      ..write(obj.expiresIn);
   }
 
   @override

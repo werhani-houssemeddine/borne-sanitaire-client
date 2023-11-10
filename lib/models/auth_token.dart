@@ -6,5 +6,11 @@ class AuthToken {
   @HiveField(0)
   String? token;
 
-  AuthToken({required this.token});
+  @HiveField(1)
+  int? expiresIn;
+
+  AuthToken({
+    required this.token,
+    this.expiresIn,
+  });
 }
