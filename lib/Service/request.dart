@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 import 'package:borne_sanitaire_client/config.dart';
@@ -15,5 +17,24 @@ class Request {
         headers: headers);
   }
 
-  static post() {}
+  static Future<http.Response> post({
+    required String endpoint,
+    required Map<String, String> payload,
+    Map<String, String>? headers,
+    Map<String, String>? queries,
+  }) async {
+    if (headers != null) {
+      headers['Content-Type'] = 'application/json; charset=UTF-8';
+    } else {
+      headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+      };
+    }
+
+    return await http.post(
+      _makeURI(endpoint: endpoint, queries: queries),
+      body: jsonEncode(payload),
+      headers: headers,
+    );
+  }
 }
