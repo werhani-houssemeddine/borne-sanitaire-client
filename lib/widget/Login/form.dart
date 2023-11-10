@@ -1,6 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
+import 'package:borne_sanitaire_client/widget/Login/interfaces.dart';
+import 'package:borne_sanitaire_client/widget/Login/login_service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -224,4 +226,16 @@ TextFormField _makeInput(
 
 void handleSubmitLogin(String email, String password) async {
   print("EMAIL $email PASSWORD $password");
+  LOGIN_RESPONSE response =
+      await submitLoginForm(email: email, password: password);
+}
+
+class handleSubmitResponse {
+  static void navigateToMain() {}
+
+  static void badCredentials() {}
+
+  static void badRequest() {}
+
+  static serverError() {}
 }
