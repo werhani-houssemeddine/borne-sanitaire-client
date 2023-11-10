@@ -14,22 +14,30 @@ Future<String> init() async {
   Hive.init(directory.path);
 
   Hive.registerAdapter(AuthTokenAdapter());
-  final Box authBox = await Hive.openBox('authBox');
-  final String? token = await authBox.get('token');
-  if (token != null) {
-    const String endpoint = "/api/client/current-user/";
-    Map<String, String> headers = {"Authorization": token};
 
-    var response = await Request.get(endpoint: endpoint, headers: headers);
+  try {
+    final Box authBox = await Hive.openBox<AuthToken>('authBox');
+    final AuthToken? isTokenExist = await authBox.get('token');
 
-    // Must redirect to Login Page and delete the token from authBox
-    if (response.statusCode == 401) {
-      await authBox.delete('token'); // delete token from authBox
-      return "LOGIN";
+    if (isTokenExist != null) {
+      String token = isTokenExist.token;
+
+      const String endpoint = "/api/client/current-user/";
+      Map<String, String> headers = {"Authorization": token};
+
+      var response = await Request.get(endpoint: endpoint, headers: headers);
+
+      // Must redirect to Login Page and delete the token from authBox
+      if (response.statusCode == 401) {
+        await authBox.delete('token'); // delete token from authBox
+        return "LOGIN";
+      } else {
+        return "HOME";
+      }
     } else {
-      return "HOME";
+      return "LOGIN";
     }
-  } else {
-    return "LOGIN";
+  } catch (_) {
+    return "ERROR";
   }
 }
