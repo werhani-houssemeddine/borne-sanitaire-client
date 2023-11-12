@@ -26,7 +26,7 @@ initialScreen() {
       if (snapshot.hasError) {
         AutoRouter.of(context).push(const WelcomeRoute()).then((value) => {});
       } else if (snapshot.hasData) {
-        AutoRouter.of(context).push(const WelcomeRoute()).then((value) => {});
+        AutoRouter.of(context).push(const HomeRoute()).then((value) => {});
       }
       return waitingWidget();
     } else {
