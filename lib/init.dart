@@ -54,3 +54,7 @@ Future<String> init() async {
     return "ERROR";
   }
 }
+
+// ignore_for_file: constant_identifier_names
+// ignore: camel_case_types
+enum INITIALIZATION_RESPONSE { LOGIN, ERROR, HOME }
