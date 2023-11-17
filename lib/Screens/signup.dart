@@ -39,21 +39,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.grey[300],
-          body: FutureBuilder(
-            future: _scan(),
-            builder: ((BuildContext context, AsyncSnapshot<String?> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                print(snapshot.data);
-                return const Text("Text Here");
-              } else {
-                return const CircularProgressIndicator.adaptive();
-              }
-            }),
-          ),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.grey[300],
+        body: FutureBuilder(
+          future: _scan(),
+          builder: _handleBuilder(),
         ),
       ),
     );
@@ -80,5 +71,20 @@ class _MyAppState extends State<MyApp> {
     String? barcode = await scanner.scan();
 
     return barcode;
+  }
+
+  Widget Function(BuildContext, AsyncSnapshot<String?>) _handleBuilder() {
+    return (BuildContext context, AsyncSnapshot<String?> snapshot) {
+      if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.data != null) {
+          String data = snapshot.data as String;
+          return Text(data);
+        } else {
+          return const Text("Will be here as soon as possible 😊");
+        }
+      } else {
+        return const CircularProgressIndicator.adaptive();
+      }
+    };
   }
 }
