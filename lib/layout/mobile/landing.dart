@@ -45,21 +45,20 @@ Widget _ButtonsContainer(BuildContext context) {
 }
 
 Widget _Buttons(BuildContext context) {
+  void navigateToStartedPage() {
+    AutoRouter.of(context).push(const SignupRoute()).then((value) => {});
+  }
+
+  void navigateToLoginPage() {
+    AutoRouter.of(context).push(const LoginRoute()).then((value) => {});
+  }
+
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 20),
     child: Column(
       children: [
-        Expanded(
-            flex: 1,
-            child: _Button(
-                () => {
-                      AutoRouter.of(context)
-                          .push(const LoginRoute())
-                          .then((value) => {})
-                    },
-                "LOGIN")),
-        // const Expanded(flex: 1, child: SizedBox()),
-        Expanded(flex: 1, child: _Button(() => null, "GET STARTED"))
+        Expanded(flex: 1, child: _Button(navigateToLoginPage, "LOGIN")),
+        Expanded(flex: 1, child: _Button(navigateToStartedPage, "GET STARTED")),
       ],
     ),
   );
