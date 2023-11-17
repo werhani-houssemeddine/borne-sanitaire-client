@@ -12,7 +12,7 @@ import 'package:borne_sanitaire_client/Service/request.dart';
 
 import 'package:http/http.dart' as http;
 
-Future<String> init() async {
+Future<INITIALIZATION_RESPONSE> init() async {
   WidgetsFlutterBinding.ensureInitialized();
   final directory = await path.getApplicationDocumentsDirectory();
   Hive.init(directory.path);
@@ -35,23 +35,23 @@ Future<String> init() async {
       // Must redirect to Login Page and delete the token from authBox
       if (response.statusCode == 401) {
         await authBox.delete('token'); // delete token from authBox
-        return "LOGIN";
+        return INITIALIZATION_RESPONSE.LOGIN;
       } else if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
         var state = body['state'];
         if (state == "SUCCESS") {
-          return "HOME";
+          return INITIALIZATION_RESPONSE.HOME;
         } else {
-          return "LOGIN";
+          return INITIALIZATION_RESPONSE.LOGIN;
         }
       }
 
-      return "LOGIN";
+      return INITIALIZATION_RESPONSE.LOGIN;
     } else {
-      return "LOGIN";
+      return INITIALIZATION_RESPONSE.LOGIN;
     }
   } catch (_) {
-    return "ERROR";
+    return INITIALIZATION_RESPONSE.ERROR;
   }
 }
 
