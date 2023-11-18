@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.grey[300],
         body: FutureBuilder(
           future: _scan(),
-          builder: _handleBuilder(),
+          builder: _scaningQRCode(),
         ),
       ),
     );
@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
     return barcode;
   }
 
-  Widget Function(BuildContext, AsyncSnapshot<String?>) _handleBuilder() {
+  Widget Function(BuildContext, AsyncSnapshot<String?>) _scaningQRCode() {
     return (BuildContext context, AsyncSnapshot<String?> snapshot) {
       if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.data != null) {
