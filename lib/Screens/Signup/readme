@@ -1,0 +1,3 @@
+This screen will be responsible of opening the camera to scan
+the QR code of the device than he will ask the server for device
+disponibility and then he will render even the form widget or the expired device widget
