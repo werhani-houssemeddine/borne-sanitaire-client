@@ -79,6 +79,7 @@ class _MyAppState extends State<MyApp> {
       if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.data != null) {
           String data = snapshot.data as String;
+          print("DATA SCANNED $data");
           return _accessToSignupForm(data);
         } else {
           return const Text("Will be here as soon as possible 😊");
@@ -96,16 +97,17 @@ class _MyAppState extends State<MyApp> {
       future: checkDeviceID(deviceId),
       builder: (BuildContext context, AsyncSnapshot<CHECKING_DEVICE> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          CHECKING_DEVICE response = snapshot.data as CHECKING_DEVICE;
+          if (snapshot.data != null) {
+            CHECKING_DEVICE response = snapshot.data as CHECKING_DEVICE;
 
-          if (response == CHECKING_DEVICE.VALID_DEVICE) {
-            return const Text("SINGUP WIDGET");
-          } else {
-            return const Text("EXPIRED");
+            if (response == CHECKING_DEVICE.VALID_DEVICE) {
+              return const Text("SINGUP WIDGET");
+            } else {
+              return const Text("EXPIRED");
+            }
           }
-        } else {
-          return _ProgressIndicator();
         }
+        return _ProgressIndicator();
       },
     );
   }
