@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/Signup/signup_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'dart:async';
@@ -78,13 +79,40 @@ class _MyAppState extends State<MyApp> {
       if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.data != null) {
           String data = snapshot.data as String;
-          return Text(data);
+          return _accessToSignupForm(data);
         } else {
           return const Text("Will be here as soon as possible 😊");
         }
       } else {
-        return const CircularProgressIndicator.adaptive();
+        return _ProgressIndicator();
       }
     };
   }
+
+  Widget _accessToSignupForm(String deviceId) {
+    // We check if the id is valid? id is the data comming from the qrcode
+
+    return FutureBuilder(
+      future: checkDeviceID(deviceId),
+      builder: (BuildContext context, AsyncSnapshot<CHECKING_DEVICE> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          CHECKING_DEVICE response = snapshot.data as CHECKING_DEVICE;
+
+          if (response == CHECKING_DEVICE.VALID_DEVICE) {
+            return const Text("SINGUP WIDGET");
+          } else {
+            return const Text("EXPIRED");
+          }
+        } else {
+          return const CircularProgressIndicator.adaptive();
+        }
+      },
+    );
+  }
+}
+
+Widget _ProgressIndicator() {
+  return const Center(
+    child: CircularProgressIndicator.adaptive(),
+  );
 }
