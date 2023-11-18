@@ -104,13 +104,14 @@ class _MyAppState extends State<MyApp> {
             return const Text("EXPIRED");
           }
         } else {
-          return const CircularProgressIndicator.adaptive();
+          return _ProgressIndicator();
         }
       },
     );
   }
 }
 
+// ignore: non_constant_identifier_names
 Widget _ProgressIndicator() {
   return const Center(
     child: CircularProgressIndicator.adaptive(),
