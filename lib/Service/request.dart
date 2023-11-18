@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'package:borne_sanitaire_client/config.dart';
+import 'package:borne_sanitaire_client/config.dart' show BASE_URL;
 
 Uri _makeURI({required String endpoint, Map<String, String>? queries}) {
   return Uri.http(BASE_URL, endpoint, queries);
