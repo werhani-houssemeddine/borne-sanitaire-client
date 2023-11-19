@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'signup_service.dart' show makeSignUpRequest;
 
 class SignUpForm extends StatelessWidget {
-  const SignUpForm({super.key});
+  final String deviceId;
+  const SignUpForm({super.key, required this.deviceId});
 
   @override
   Widget build(BuildContext context) {
@@ -10,16 +12,17 @@ class SignUpForm extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: const Padding(
-        padding: EdgeInsets.all(3.0),
-        child: _Form(),
+      child: Padding(
+        padding: const EdgeInsets.all(3.0),
+        child: _Form(deviceId: deviceId),
       ),
     );
   }
 }
 
 class _Form extends StatefulWidget {
-  const _Form();
+  final String deviceId;
+  const _Form({required this.deviceId});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -29,6 +32,8 @@ class _Form extends StatefulWidget {
 class _SignUpFormState extends State<_Form> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
+
+  _SignUpFormState();
 
   @override
   void initState() {
@@ -44,6 +49,7 @@ class _SignUpFormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    String deviceId = widget.deviceId;
     return Form(
       key: _formKey,
       child: Column(
@@ -72,7 +78,10 @@ class _SignUpFormState extends State<_Form> {
             suffixIcon: _isObscure ? Icons.visibility_off : Icons.visibility,
             onSuffixIconPressed: togglePasswordVisibility,
           ).buildWithMargin(),
-          SubmitButton(formKey: _formKey),
+          SubmitButton(
+            formKey: _formKey,
+            deviceId: deviceId,
+          ),
         ],
       ),
     );
@@ -151,8 +160,26 @@ class TextFormFieldBuilder {
 
 class SubmitButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
+  final String deviceId;
 
-  const SubmitButton({super.key, required this.formKey});
+  const SubmitButton({
+    super.key,
+    required this.formKey,
+    required this.deviceId,
+  });
+
+  _submitForm({
+    required String email,
+    required String password,
+    required String username,
+  }) async {
+    await makeSignUpRequest(
+      email: email,
+      username: username,
+      password: password,
+      deviceId: deviceId,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,18 +190,11 @@ class SubmitButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           if (formKey.currentState!.validate()) {
-            print('Form is valid');
-            // Access the data using the controllers
-            String email = UserController.emailController!.text.trim();
-            String username = UserController.usernameController!.text.trim();
-            String password = UserController.passwordController!.text.trim();
-
-            // Use the data as needed
-            print('Email: $email');
-            print('Username: $username');
-            print('Password: $password');
-          } else {
-            print('Form is not valid');
+            _submitForm(
+              email: UserController.emailController!.text.trim(),
+              username: UserController.usernameController!.text.trim(),
+              password: UserController.passwordController!.text.trim(),
+            );
           }
         },
         child: const Text('Submit'),
