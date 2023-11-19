@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/Signup/expired_device.dart';
+import 'package:borne_sanitaire_client/Screens/Signup/form.dart';
 import 'package:borne_sanitaire_client/Screens/Signup/signup_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
@@ -69,9 +71,8 @@ class _MyAppState extends State<MyApp> {
 
   Future<String?> _scan() async {
     await Permission.camera.request();
-    String? barcode = await scanner.scan();
-
-    return barcode;
+    String? qrcode = await scanner.scan();
+    return qrcode;
   }
 
   Widget Function(BuildContext, AsyncSnapshot<String?>) _scaningQRCode() {
@@ -79,8 +80,9 @@ class _MyAppState extends State<MyApp> {
       if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.data != null) {
           String data = snapshot.data as String;
-          print("DATA SCANNED $data");
-          return _accessToSignupForm(data);
+          String dataAfterReomvingHyphen = data.replaceAll('-', '');
+
+          return _accessToSignupForm(dataAfterReomvingHyphen);
         } else {
           return const Text("Will be here as soon as possible 😊");
         }
@@ -101,9 +103,9 @@ class _MyAppState extends State<MyApp> {
             CHECKING_DEVICE response = snapshot.data as CHECKING_DEVICE;
 
             if (response == CHECKING_DEVICE.VALID_DEVICE) {
-              return const Text("SINGUP WIDGET");
+              return const SignUpForm();
             } else {
-              return const Text("EXPIRED");
+              return const ExpiredDeviceWidget();
             }
           }
         }
