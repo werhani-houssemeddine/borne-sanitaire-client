@@ -23,18 +23,21 @@ class Request {
     Map<String, String>? headers,
     Map<String, String>? queries,
   }) async {
-    if (headers != null) {
-      headers['Content-Type'] = 'application/json; charset=UTF-8';
-    } else {
+    try {
       headers = {
+        ...?headers,
         'Content-Type': 'application/json; charset=UTF-8',
       };
-    }
 
-    return await http.post(
-      _makeURI(endpoint: endpoint, queries: queries),
-      body: jsonEncode(payload),
-      headers: headers,
-    );
+      final response = await http.post(
+        _makeURI(endpoint: endpoint, queries: queries),
+        body: jsonEncode(payload),
+        headers: headers,
+      );
+
+      return response;
+    } catch (error) {
+      rethrow;
+    }
   }
 }
