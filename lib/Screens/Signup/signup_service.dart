@@ -45,7 +45,7 @@ Future<SIGN_UP_RESULT> makeSignUpRequest({
     );
 
     final Map<String, dynamic> responseBody = jsonDecode(response.body);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       dynamic data = responseBody['data'];
       if (data.containsKey('token')) {
         // Open authToken [HiveBox]
