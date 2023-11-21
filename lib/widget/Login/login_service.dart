@@ -8,42 +8,41 @@ import 'package:http/http.dart' as http;
 
 Future<LOGIN_RESPONSE> submitLoginForm(
     {required String email, required String password}) async {
-  // Trim email and password
-  email = email.trim();
-  password = password.trim();
+  try {
+    Map<String, String> payload = _createPayload(email.trim(), password.trim());
 
-  // Create Payload
-  Map<String, String> payload = {'email': email, 'password': password};
+    String url = "/api/client/login/";
+    http.Response response = await _postRequest(url, payload);
 
-  String url = "/api/client/login/";
-  http.Response response = await Request.post(endpoint: url, payload: payload);
+    var responseBody = jsonDecode(response.body);
 
-  // Extract response body
-  var responseBody = jsonDecode(response.body);
-
-  // Return result
-  if (response.statusCode == 401) {
-    return LOGIN_RESPONSE.INCORRECT_CREDENTIALS;
-  } else if (response.statusCode >= 500) {
+    if (response.statusCode == 401) {
+      throw LOGIN_RESPONSE.INCORRECT_CREDENTIALS;
+    } else if (response.statusCode >= 500) {
+      throw LOGIN_RESPONSE.SERVER_ERROR;
+    } else {
+      return _handleSuccessResponse(responseBody);
+    }
+  } catch (e) {
     return LOGIN_RESPONSE.SERVER_ERROR;
-  } else if (responseBody["state"] == "SUCCESS") {
-    Map<String, String> data = responseBody["data"];
+  }
+}
+
+Future<http.Response> _postRequest(
+    String url, Map<String, String> payload) async {
+  return await Request.post(endpoint: url, payload: payload);
+}
+
+Map<String, String> _createPayload(String email, String password) {
+  return {'email': email, 'password': password};
+}
+
+LOGIN_RESPONSE _handleSuccessResponse(Map<String, dynamic> responseBody) {
+  if (responseBody["state"] == "SUCCESS") {
+    Map<String, dynamic> data = responseBody["data"];
+    print(data);
     if (data.containsKey('token')) {
-      // Open authToken [HiveBox]
-      final Box authBox = await Hive.openBox<AuthToken>('authBox');
-
-      // Create an authToken instance
-      final AuthToken makeToken = AuthToken(
-        token: data['token'] as String,
-        expiresIn: 3600,
-      );
-
-      // save the authToken instance
-      await authBox.put('token', makeToken);
-
-      // Close the box
-      await Hive.close();
-
+      _saveAuthToken(data['token']!);
       return LOGIN_RESPONSE.SUCCESS;
     } else {
       return LOGIN_RESPONSE.SERVER_ERROR;
@@ -51,4 +50,14 @@ Future<LOGIN_RESPONSE> submitLoginForm(
   } else {
     return LOGIN_RESPONSE.BAD_INPUTS;
   }
+}
+
+void _saveAuthToken(String token) async {
+  final Box authBox = await Hive.openBox<AuthToken>('authBox');
+  final AuthToken makeToken = AuthToken(
+    token: token,
+    expiresIn: 3600,
+  );
+  await authBox.put('token', makeToken);
+  await Hive.close();
 }
