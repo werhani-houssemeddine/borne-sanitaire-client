@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/widget/Login/interfaces.dart';
 import 'package:borne_sanitaire_client/widget/Login/login_service.dart';
@@ -64,7 +65,7 @@ class MyCustomFormState extends State<LoginFormWidget> {
           _InputContainer(
             _makeInput(
               _FormInput.emailController,
-              _emailValidator,
+              _InputValidators.emailValidator,
               resetEmail,
               _emailDecoration(_FormInput.getEmailError()),
               autofocus: true,
@@ -73,16 +74,16 @@ class MyCustomFormState extends State<LoginFormWidget> {
           _InputContainer(
             _makeInput(
               _FormInput.passwordController,
-              _passwordValidator,
+              _InputValidators.passwordValidator,
               resetPassword,
               _passwordDecoration(_FormInput.getPasswordError()),
               obscureText: true,
             ),
           ),
-          _submitButton(
-            _formKey,
-            _FormInput.emailController,
-            _FormInput.passwordController,
+          _SubmitLoginButton(
+            formKey: _formKey,
+            emailController: _FormInput.emailController,
+            passwordController: _FormInput.passwordController,
           ),
           Center(
             child: RichText(
@@ -102,55 +103,82 @@ class MyCustomFormState extends State<LoginFormWidget> {
   }
 }
 
-String? _emailValidator(String? value) {
-  if (value == null || value.isEmpty) {
-    return "Email is required";
+class _InputValidators {
+  static String? emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Email is required";
+    }
+
+    final emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+
+    if (emailRegex.hasMatch(value) == false) {
+      return "Invalid Email";
+    }
+
+    return null;
   }
 
-  final emailRegex =
-      RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  static String? passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Password is required";
+    }
 
-  if (emailRegex.hasMatch(value) == false) {
-    return "Invalid Email";
+    if (value.length < 10) {
+      return "Too Short Password";
+    }
+
+    return null;
   }
-
-  return null;
 }
 
-String? _passwordValidator(String? value) {
-  if (value == null || value.isEmpty) {
-    return "Password is required";
+class _SubmitLoginButton extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController passwordController;
+  final TextEditingController emailController;
+
+  const _SubmitLoginButton(
+      {required this.formKey,
+      required this.emailController,
+      required this.passwordController});
+
+  void _handleSubmitLogin(
+      String email, String password, BuildContext context) async {
+    LOGIN_RESPONSE response =
+        await submitLoginForm(email: email, password: password);
+
+    if (response == LOGIN_RESPONSE.SUCCESS) {
+      if (context.mounted) {
+        AutoRouter.of(context).push(const HomeRoute()).then((value) => null);
+      }
+    } else if (response == LOGIN_RESPONSE.SERVER_ERROR) {
+      if (context.mounted) {
+        AutoRouter.of(context).push(const WelcomeRoute()).then((value) => null);
+      }
+    }
   }
 
-  if (value.length < 10) {
-    return "Too Short Password";
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(10),
+      height: 50,
+      child: ElevatedButton(
+        child: const Text("Login"),
+        onPressed: () => {
+          if (formKey.currentState!.validate())
+            {
+              _handleSubmitLogin(
+                emailController.value.text,
+                passwordController.value.text,
+                context,
+              )
+            }
+        },
+      ),
+    );
   }
-
-  return null;
-}
-
-Widget _submitButton(
-  GlobalKey<FormState> formKey,
-  TextEditingController emailController,
-  TextEditingController passwordController,
-) {
-  return Container(
-    width: double.infinity,
-    margin: const EdgeInsets.all(10),
-    height: 50,
-    child: ElevatedButton(
-      child: const Text("Login"),
-      onPressed: () => {
-        if (formKey.currentState!.validate())
-          {
-            handleSubmitLogin(
-              emailController.value.text,
-              passwordController.value.text,
-            )
-          }
-      },
-    ),
-  );
 }
 
 InputDecoration _emailDecoration(bool emailError) {
@@ -222,20 +250,4 @@ TextFormField _makeInput(
     decoration: decoration,
     onChanged: onChanged,
   );
-}
-
-void handleSubmitLogin(String email, String password) async {
-  print("EMAIL $email PASSWORD $password");
-  LOGIN_RESPONSE response =
-      await submitLoginForm(email: email, password: password);
-}
-
-class handleSubmitResponse {
-  static void navigateToMain() {}
-
-  static void badCredentials() {}
-
-  static void badRequest() {}
-
-  static serverError() {}
 }
