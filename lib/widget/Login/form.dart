@@ -67,7 +67,9 @@ class MyCustomFormState extends State<LoginFormWidget> {
               _FormInput.emailController,
               _InputValidators.emailValidator,
               resetEmail,
-              _emailDecoration(_FormInput.getEmailError()),
+              _InputDecoration.emailDecoration(
+                _FormInput.getEmailError(),
+              ),
               autofocus: true,
             ),
           ),
@@ -76,7 +78,9 @@ class MyCustomFormState extends State<LoginFormWidget> {
               _FormInput.passwordController,
               _InputValidators.passwordValidator,
               resetPassword,
-              _passwordDecoration(_FormInput.getPasswordError()),
+              _InputDecoration.passwordDecoration(
+                _FormInput.getPasswordError(),
+              ),
               obscureText: true,
             ),
           ),
@@ -181,20 +185,70 @@ class _SubmitLoginButton extends StatelessWidget {
   }
 }
 
-InputDecoration _emailDecoration(bool emailError) {
-  return _makeInputDecoration(
-    hint: "Enter Your Email",
-    inputIcon: const Icon(Icons.person_2_rounded),
-    error: _FormInput.getEmailError(),
-  );
+class _InputDecoration {
+  static InputDecoration makeInputDecoration(
+      {Icon? inputIcon, String hint = "Enter data", bool error = false}) {
+    Widget? checkIcon() {
+      if (inputIcon != null) {
+        return Align(
+          widthFactor: 1.0,
+          heightFactor: 1.0,
+          child: inputIcon,
+        );
+      } else {
+        return null;
+      }
+    }
+
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: checkIcon(),
+      prefixIconColor: error ? Colors.red : Colors.green,
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.green, width: 1.0),
+      ),
+      errorBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red, width: 1.0),
+      ),
+      border: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        borderRadius: BorderRadius.circular(7),
+      ),
+    );
+  }
+
+  static InputDecoration emailDecoration(bool emailError) {
+    return makeInputDecoration(
+      hint: "Enter Your Email",
+      inputIcon: const Icon(Icons.person_2_rounded),
+      error: _FormInput.getEmailError(),
+    );
+  }
+
+  static InputDecoration passwordDecoration(bool passwordError) {
+    return makeInputDecoration(
+      hint: "Enter Your Password",
+      inputIcon: const Icon(Icons.password),
+      error: _FormInput.getPasswordError(),
+    );
+  }
 }
 
-InputDecoration _passwordDecoration(bool passwordError) {
-  return _makeInputDecoration(
-    hint: "Enter Your Password",
-    inputIcon: const Icon(Icons.password),
-    error: _FormInput.getPasswordError(),
-  );
+class _CustomInputContainer extends StatelessWidget {
+  final Widget input;
+  const _CustomInputContainer({required this.input});
+
+  @override
+  Widget build(BuildContext context) {
+    if (input is TextFormField || input is ElevatedButton) {
+      return Container(
+        margin: const EdgeInsets.all(10.0),
+        child: input,
+      );
+    } else {
+      return Container();
+    }
+  }
 }
 
 Widget _InputContainer(Widget input) {
@@ -206,37 +260,6 @@ Widget _InputContainer(Widget input) {
   }
 
   throw Error();
-}
-
-InputDecoration _makeInputDecoration(
-    {Icon? inputIcon, String hint = "Enter data", bool error = false}) {
-  Widget? checkIcon() {
-    if (inputIcon != null) {
-      return Align(
-        widthFactor: 1.0,
-        heightFactor: 1.0,
-        child: inputIcon,
-      );
-    } else {
-      return null;
-    }
-  }
-
-  return InputDecoration(
-    hintText: hint,
-    prefixIcon: checkIcon(),
-    prefixIconColor: error ? Colors.red : Colors.green,
-    focusedBorder: const OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.green, width: 1.0),
-    ),
-    errorBorder: const OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.red, width: 1.0),
-    ),
-    border: OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.green, width: 1.0),
-      borderRadius: BorderRadius.circular(7),
-    ),
-  );
 }
 
 TextFormField _makeInput(
