@@ -1,5 +1,8 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'signup_service.dart' show makeSignUpRequest;
+import 'response_service.dart' show SIGN_UP_RESULT;
 
 class SignUpForm extends StatelessWidget {
   final String deviceId;
@@ -172,13 +175,34 @@ class SubmitButton extends StatelessWidget {
     required String email,
     required String password,
     required String username,
+    required BuildContext context,
   }) async {
-    await makeSignUpRequest(
+    SIGN_UP_RESULT singupResult = await makeSignUpRequest(
       email: email,
       username: username,
       password: password,
       deviceId: deviceId,
     );
+
+    if (context.mounted) {
+      handleSignUpResult(singupResult, context);
+    }
+  }
+
+  void updateErrorText(TextEditingController? controller, String errorMessage) {
+    controller
+      ?..text = ''
+      ..value = controller.value.copyWith(text: errorMessage);
+  }
+
+  void handleSignUpResult(SIGN_UP_RESULT result, BuildContext context) {
+    if (result == SIGN_UP_RESULT.SUCCESS) {
+      //! Redirect to home page
+      AutoRouter.of(context).push(const HomeRoute()).then((value) => {});
+    } else /*(result == SIGN_UP_RESULT.BAD_REQUEST_EMAIL_USED)*/ {
+      UserController.emailController!.clear();
+      updateErrorText(UserController.emailController, 'Email already in use.');
+    }
   }
 
   @override
@@ -194,6 +218,7 @@ class SubmitButton extends StatelessWidget {
               email: UserController.emailController!.text.trim(),
               username: UserController.usernameController!.text.trim(),
               password: UserController.passwordController!.text.trim(),
+              context: context,
             );
           }
         },
