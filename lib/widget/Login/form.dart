@@ -62,27 +62,23 @@ class MyCustomFormState extends State<LoginFormWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          _InputContainer(
-            _makeInput(
-              _FormInput.emailController,
-              _InputValidators.emailValidator,
-              resetEmail,
-              _InputDecoration.emailDecoration(
-                _FormInput.getEmailError(),
-              ),
-              autofocus: true,
+          _makeInput(
+            _FormInput.emailController,
+            _InputValidators.emailValidator,
+            resetEmail,
+            _InputDecoration.emailDecoration(
+              _FormInput.getEmailError(),
             ),
+            autofocus: true,
           ),
-          _InputContainer(
-            _makeInput(
-              _FormInput.passwordController,
-              _InputValidators.passwordValidator,
-              resetPassword,
-              _InputDecoration.passwordDecoration(
-                _FormInput.getPasswordError(),
-              ),
-              obscureText: true,
+          _makeInput(
+            _FormInput.passwordController,
+            _InputValidators.passwordValidator,
+            resetPassword,
+            _InputDecoration.passwordDecoration(
+              _FormInput.getPasswordError(),
             ),
+            obscureText: true,
           ),
           _SubmitLoginButton(
             formKey: _formKey,
@@ -234,9 +230,9 @@ class _InputDecoration {
   }
 }
 
-class _CustomInputContainer extends StatelessWidget {
+class _CustomInput extends StatelessWidget {
   final Widget input;
-  const _CustomInputContainer({required this.input});
+  const _CustomInput({required this.input});
 
   @override
   Widget build(BuildContext context) {
@@ -251,26 +247,17 @@ class _CustomInputContainer extends StatelessWidget {
   }
 }
 
-Widget _InputContainer(Widget input) {
-  if (input is TextFormField || input is ElevatedButton) {
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      child: input,
-    );
-  }
-
-  throw Error();
-}
-
-TextFormField _makeInput(
+Widget _makeInput(
     TextEditingController controller, validator, onChanged, decoration,
     {bool autofocus = false, bool obscureText = false}) {
-  return TextFormField(
-    controller: controller,
-    validator: validator,
-    autofocus: autofocus,
-    obscureText: obscureText,
-    decoration: decoration,
-    onChanged: onChanged,
+  return _CustomInput(
+    input: TextFormField(
+      controller: controller,
+      validator: validator,
+      autofocus: autofocus,
+      obscureText: obscureText,
+      decoration: decoration,
+      onChanged: onChanged,
+    ),
   );
 }
