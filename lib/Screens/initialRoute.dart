@@ -12,11 +12,13 @@ class InitialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-            body: FutureBuilder(
-      future: init(),
-      builder: _initialScreen(),
-    )));
+      home: Scaffold(
+        body: FutureBuilder(
+          future: init(),
+          builder: _initialScreen(),
+        ),
+      ),
+    );
   }
 }
 
