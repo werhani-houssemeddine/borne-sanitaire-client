@@ -15,7 +15,7 @@ class InitialScreen extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: FutureBuilder(
-          future: init(),
+          future: AuthManager.initialize(),
           builder: _initialScreen(),
         ),
       ),
