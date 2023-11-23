@@ -1,3 +1,4 @@
+import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
 import 'package:flutter/material.dart';
 
 class HomePageAndroidLayout extends StatefulWidget {
@@ -87,7 +88,7 @@ class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
             ),
             child: FloatingActionButton(
               onPressed: () {
-                _addNewAgentOrDevice(context);
+                AddAgentBuilder(context);
               },
               backgroundColor: Colors.white,
               child: const Icon(
@@ -183,7 +184,7 @@ class HomePageContent extends StatelessWidget {
               ),
             ),
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 
   @override
@@ -197,39 +198,4 @@ class HomePageContent extends StatelessWidget {
       ],
     );
   }
-}
-
-Future _addNewAgentOrDevice(BuildContext context) {
-  return showDialog(
-    context: context,
-    barrierColor: Colors.black87.withOpacity(0.5),
-    builder: (context) => Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Container(
-        constraints: const BoxConstraints(maxHeight: 350),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Add new Agent'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Add new Device'),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 }
