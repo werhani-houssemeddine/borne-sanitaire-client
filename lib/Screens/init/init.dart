@@ -1,61 +1,62 @@
-// Check if the user logged In to redirect him to
-// Main Page otherwise he will be redirect to Login Page
-
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:path_provider/path_provider.dart' as path;
-import 'package:borne_sanitaire_client/models/auth_token.dart';
-
+import 'package:borne_sanitaire_client/utils/hive.dart';
 import 'package:borne_sanitaire_client/Service/request.dart';
-
 import 'package:http/http.dart' as http;
 
-Future<INITIALIZATION_RESPONSE> init() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final directory = await path.getApplicationDocumentsDirectory();
-  Hive.init(directory.path);
+// ignore: camel_case_types, constant_identifier_names
+enum INITIALIZATION_RESPONSE { LOGIN, ERROR, HOME }
 
-  Hive.registerAdapter(AuthTokenAdapter());
+class AuthManager {
+  static Future<INITIALIZATION_RESPONSE> initialize() async {
+    try {
+      String? token = await _getToken();
+      http.Response response = await _makeRequest(token);
 
-  try {
-    final Box authBox = await Hive.openBox<AuthToken>('authBox');
-    final AuthToken? isTokenExist = await authBox.get('token');
+      if (response.statusCode == 401) {
+        return _handleFailureRequest();
+      } else if (response.statusCode == 200) {
+        return _handleSuccessRequest(jsonDecode(response.body));
+      }
 
-    if (isTokenExist != null) {
-      String token = isTokenExist.token;
+      throw Exception();
+    } catch (e) {
+      return INITIALIZATION_RESPONSE.ERROR;
+    }
+  }
+
+  static Future<String?> _getToken() async {
+    try {
+      LocalStorageAuthToken.registerToken();
+      String? token = await LocalStorageAuthToken.getToken();
+
+      if (token != null) return token;
+      throw Exception();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<http.Response> _makeRequest(String? token) async {
+    try {
+      if (token == null) throw Exception();
 
       const String endpoint = "/api/client/current-user/";
       Map<String, String> headers = {"Authorization": token};
-
-      http.Response response =
-          await Request.get(endpoint: endpoint, headers: headers);
-
-      //? Must redirect to Login Page and delete the token from authBox
-      if (response.statusCode == 401) {
-        //? delete token from authBox
-        await authBox.delete('token');
-        return INITIALIZATION_RESPONSE.LOGIN;
-      } else if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        var state = body['state'];
-        if (state == "SUCCESS") {
-          return INITIALIZATION_RESPONSE.HOME;
-        } else {
-          return INITIALIZATION_RESPONSE.LOGIN;
-        }
-      }
-
-      return INITIALIZATION_RESPONSE.LOGIN;
-    } else {
-      return INITIALIZATION_RESPONSE.LOGIN;
+      return await Request.get(endpoint: endpoint, headers: headers);
+    } catch (e) {
+      rethrow;
     }
-  } catch (_) {
-    return INITIALIZATION_RESPONSE.ERROR;
+  }
+
+  static INITIALIZATION_RESPONSE _handleSuccessRequest(
+      Map<String, String> body) {
+    return body['state'] == 'SUCCESS'
+        ? INITIALIZATION_RESPONSE.HOME
+        : INITIALIZATION_RESPONSE.LOGIN;
+  }
+
+  static INITIALIZATION_RESPONSE _handleFailureRequest() {
+    LocalStorageAuthToken.deleteToken();
+    return INITIALIZATION_RESPONSE.LOGIN;
   }
 }
-
-// ignore_for_file: constant_identifier_names
-// ignore: camel_case_types
-enum INITIALIZATION_RESPONSE { LOGIN, ERROR, HOME }
