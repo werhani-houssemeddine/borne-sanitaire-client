@@ -32,9 +32,10 @@ Future<INITIALIZATION_RESPONSE> init() async {
       http.Response response =
           await Request.get(endpoint: endpoint, headers: headers);
 
-      // Must redirect to Login Page and delete the token from authBox
+      //? Must redirect to Login Page and delete the token from authBox
       if (response.statusCode == 401) {
-        await authBox.delete('token'); // delete token from authBox
+        //? delete token from authBox
+        await authBox.delete('token');
         return INITIALIZATION_RESPONSE.LOGIN;
       } else if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
