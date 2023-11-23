@@ -40,7 +40,6 @@ Map<String, String> _createPayload(String email, String password) {
 LOGIN_RESPONSE _handleSuccessResponse(Map<String, dynamic> responseBody) {
   if (responseBody["state"] == "SUCCESS") {
     Map<String, dynamic> data = responseBody["data"];
-    print(data);
     if (data.containsKey('token')) {
       _saveAuthToken(data['token']!);
       return LOGIN_RESPONSE.SUCCESS;
