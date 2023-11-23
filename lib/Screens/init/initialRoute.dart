@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:borne_sanitaire_client/init.dart';
+import 'package:borne_sanitaire_client/Screens/init/init.dart';
 
 @RoutePage()
 class InitialScreen extends StatelessWidget {
@@ -12,6 +12,7 @@ class InitialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showSemanticsDebugger: false,
       home: Scaffold(
         body: FutureBuilder(
           future: init(),

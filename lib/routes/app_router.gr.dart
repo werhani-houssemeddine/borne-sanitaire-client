@@ -9,7 +9,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i6;
-import 'package:borne_sanitaire_client/Screens/initialRoute.dart' as _i2;
+import 'package:borne_sanitaire_client/Screens/init/initialRoute.dart' as _i2;
 import 'package:borne_sanitaire_client/Screens/login.dart' as _i3;
 import 'package:borne_sanitaire_client/Screens/Home/main.dart' as _i1;
 import 'package:borne_sanitaire_client/Screens/Signup/main.dart' as _i4;
