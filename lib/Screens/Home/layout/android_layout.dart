@@ -1,4 +1,5 @@
 import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Widget/profile.dart';
 import 'package:flutter/material.dart';
 
 class HomePageAndroidLayout extends StatefulWidget {
@@ -106,6 +107,7 @@ class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
     setState(() {
       _selectedIndex = index;
     });
+    if (_selectedIndex == 4) displayProfileBottomSheet(context);
   }
 }
 
