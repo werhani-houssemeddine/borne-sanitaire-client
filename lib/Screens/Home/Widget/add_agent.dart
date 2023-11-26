@@ -1,3 +1,5 @@
+import 'package:borne_sanitaire_client/Screens/Home/Service/agent.dart';
+import 'package:borne_sanitaire_client/Screens/Home/interface/agent_inerface.dart';
 import 'package:flutter/material.dart';
 
 Future AddAgentBuilder(BuildContext context) {
@@ -86,14 +88,36 @@ class _EmailSending extends StatefulWidget {
 
 class _EmailSendingState extends State<_EmailSending> {
   bool isSendingEmail = false;
+  String? sendingEmailState;
   final _emailController = TextEditingController();
 
-  void sendEmailToServer() {
+  void sendEmailToServer() async {
     if (_emailController.text.isNotEmpty) {
       if (_emailController.text.contains('@')) {
         setState(() {
           isSendingEmail = true;
         });
+
+        ADD_AGENT_INTERFACE response =
+            await Agent.addAgent(_emailController.text.trim());
+
+        if (response == ADD_AGENT_INTERFACE.SUCCESS) {
+          setState(() {
+            sendingEmailState = "SUCCESS";
+          });
+        } else if (response == ADD_AGENT_INTERFACE.MISSING_EMAIL) {
+          setState(() {
+            sendingEmailState = "MISSING EMAIL";
+          });
+        } else if (response == ADD_AGENT_INTERFACE.EMAIL_USED) {
+          setState(() {
+            sendingEmailState = "EMAIL USED";
+          });
+        } else if (response == ADD_AGENT_INTERFACE.SERVER_ERROR) {
+          setState(() {
+            sendingEmailState = "SERVER ERROR";
+          });
+        }
       }
     }
 
@@ -141,6 +165,20 @@ class _EmailSendingState extends State<_EmailSending> {
     );
   }
 
+  Widget? chooseIcon() {
+    if (isSendingEmail == true) {
+      return CircularProgressIndicator(color: Colors.greenAccent.shade400);
+    } else if (sendingEmailState != null) {
+      if (sendingEmailState == "SUCCESS") {
+        return Icon(Icons.check, color: Colors.greenAccent.shade400);
+      } else {
+        return Icon(Icons.close, color: Colors.redAccent.shade700);
+      }
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -180,11 +218,7 @@ class _EmailSendingState extends State<_EmailSending> {
                 width: 30,
                 height: 30,
                 padding: const EdgeInsets.all(8.0),
-                child: isSendingEmail
-                    ? CircularProgressIndicator(
-                        color: Colors.greenAccent.shade400,
-                      )
-                    : null,
+                child: chooseIcon(),
               ),
             ],
           ),
