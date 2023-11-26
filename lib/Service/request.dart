@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:borne_sanitaire_client/utils/user.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:borne_sanitaire_client/config.dart' show BASE_URL;
@@ -37,6 +38,32 @@ class Request {
 
       return response;
     } catch (error) {
+      rethrow;
+    }
+  }
+}
+
+class SecureRequest {
+  static Future<http.Response> post({
+    required String endpoint,
+    required Map<String, String> payload,
+    Map<String, String>? headers,
+    Map<String, String>? queries,
+  }) async {
+    try {
+      if (CurrentUser.instance?.token == null) throw Exception();
+
+      Map<String, String> headers = {
+        "Authorization": CurrentUser.instance!.token
+      };
+
+      return await Request.post(
+        endpoint: endpoint,
+        payload: payload,
+        headers: headers,
+        queries: queries,
+      );
+    } catch (e) {
       rethrow;
     }
   }
