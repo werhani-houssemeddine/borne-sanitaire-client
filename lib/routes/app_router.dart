@@ -18,5 +18,6 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: AgentsRoute.page),
           ],
         ),
+        AutoRoute(page: ProfileRoute.page),
       ];
 }
