@@ -17,16 +17,26 @@ class LocalStorageAuthToken {
   }
 
   static Future<Box<AuthToken>> getCollection() async {
-    await _LocalStorage.init();
-    return await Hive.openBox<AuthToken>('authBox');
+    try {
+      await _LocalStorage.init();
+      return await Hive.openBox<AuthToken>('authBox');
+    } catch (e) {
+      print("Getting collection error $e");
+      rethrow;
+    }
   }
 
   static Future<String?> getToken() async {
-    final Box<AuthToken> tokenBox = await getCollection();
-    final AuthToken? authToken = tokenBox.get('token');
+    try {
+      final Box<AuthToken> tokenBox = await getCollection();
+      final AuthToken? authToken = tokenBox.get('token');
 
-    //! This is similair to return authToken == null ? null : authToken.token
-    return authToken?.token;
+      //! This is similair to return authToken == null ? null : authToken.token
+      return authToken?.token;
+    } on Exception catch (e) {
+      print("An Error occured when getting the token $e");
+      return null;
+    }
   }
 
   static void deleteToken() async {
