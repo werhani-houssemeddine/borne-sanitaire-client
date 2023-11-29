@@ -9,12 +9,20 @@ class ExtractRequestData {
   String bodyResponse;
   ExtractRequestData({required this.bodyResponse});
 
-  Map _getBodyPayload() {
-    Map<String, dynamic> decodedBodyResponse = jsonDecode(bodyResponse);
-    Map<String, dynamic> userData = decodedBodyResponse['data'];
+  Map? _getBodyPayload() {
+    try {
+      Map<String, dynamic> decodedBodyResponse = jsonDecode(bodyResponse);
+      if (decodedBodyResponse.containsKey('data')) {
+        Map<String, dynamic> userData = decodedBodyResponse['data'];
 
-    userData['user']['id'] = userData['id'];
-    return userData['user'];
+        userData['user']['id'] = userData['id'];
+        return userData['user'];
+      }
+
+      throw Exception("Missing data from server response");
+    } catch (e) {
+      return null;
+    }
   }
 }
 
@@ -22,21 +30,25 @@ class User {
   static Future getCurrentUserData() async {
     try {
       String token = await getTokenFromLocalStorage();
+      print("TOKEN FROM LOCAL STORAGE $token");
       http.Response response = await _makeRequest(token);
 
       var data = ExtractRequestData(bodyResponse: response.body);
       var user = data._getBodyPayload();
 
+      print(user);
+
       var userInstance = CurrentUser.createInstance(
-        email: user['email'],
-        username: user['username'],
-        id: user['id'],
-        role: user['role'],
+        email: user?['email'],
+        username: user?['username'],
+        id: user?['id'],
+        role: user?['role'],
         token: token,
       );
 
       return userInstance;
     } catch (e) {
+      print("AN EXCEPTION OCCURED $e");
       throw Exception();
     }
   }
@@ -45,7 +57,7 @@ class User {
     try {
       if (token == null) throw Exception();
 
-      const String endpoint = "/api/client/current-user/";
+      const String endpoint = "/api/client/";
       Map<String, String> headers = {"Authorization": token};
       return await Request.get(endpoint: endpoint, headers: headers);
     } catch (e) {
