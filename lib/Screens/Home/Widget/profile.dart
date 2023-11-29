@@ -1,7 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Controller/logout.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
+import 'package:borne_sanitaire_client/utils/user.dart';
 import 'package:flutter/material.dart';
 
 Future displayProfileBottomSheet(BuildContext context) {
+  CurrentUser? user = CurrentUser.instance;
+
   const bool phoneNumber = true;
   return showModalBottomSheet(
     context: context,
@@ -27,9 +32,9 @@ Future displayProfileBottomSheet(BuildContext context) {
                   color: Colors.amber.shade900,
                 ),
               ),
-              const Expanded(
+              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,20 +46,20 @@ Future displayProfileBottomSheet(BuildContext context) {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            "Username",
-                            style: TextStyle(
+                            user?.username ?? "Username",
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                             ),
                           ),
                           Text(
-                            "example@email.com",
-                            style: TextStyle(
+                            user?.email ?? "user@example.com",
+                            style: const TextStyle(
                               fontSize: 12,
                             ),
                           ),
                           if (phoneNumber)
-                            Text(
+                            const Text(
                               "56651363",
                               style: TextStyle(
                                 fontSize: 12,
@@ -88,12 +93,9 @@ Future displayProfileBottomSheet(BuildContext context) {
                     _CustomButton(
                       buttonIcon: Icons.person_outline,
                       buttonText: "Profile",
-                      onpressed: () {},
-                    ),
-                    _CustomButton(
-                      buttonIcon: Icons.block,
-                      buttonText: "Susspend Account",
-                      onpressed: () {},
+                      onpressed: () => {
+                        context.router.navigate(const ProfileRoute()),
+                      },
                     ),
                     _CustomButton(
                       buttonIcon: Icons.logout_rounded,
