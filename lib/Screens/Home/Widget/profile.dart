@@ -1,3 +1,4 @@
+import 'package:borne_sanitaire_client/Screens/Home/Controller/logout.dart';
 import 'package:flutter/material.dart';
 
 Future displayProfileBottomSheet(BuildContext context) {
@@ -84,21 +85,25 @@ Future displayProfileBottomSheet(BuildContext context) {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const _CustomButton(
+                    _CustomButton(
                       buttonIcon: Icons.person_outline,
                       buttonText: "Profile",
+                      onpressed: () {},
                     ),
-                    Container(height: 1, color: Colors.black, width: 300),
-                    const _CustomButton(
+                    _CustomButton(
                       buttonIcon: Icons.block,
                       buttonText: "Susspend Account",
+                      onpressed: () {},
                     ),
-                    Container(height: 1, color: Colors.black, width: 300),
-                    const _CustomButton(
+                    _CustomButton(
                       buttonIcon: Icons.logout_rounded,
                       buttonText: "Logout",
+                      onpressed: () => showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) => const Logout(),
+                      ),
                     ),
-                    Container(height: 1, color: Colors.black, width: 300),
                   ],
                 ),
               ),
@@ -113,53 +118,135 @@ Future displayProfileBottomSheet(BuildContext context) {
 class _CustomButton extends StatelessWidget {
   final String buttonText;
   final IconData buttonIcon;
+  final void Function() onpressed;
 
   const _CustomButton({
     required this.buttonText,
     required this.buttonIcon,
+    required this.onpressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final double widthSize = MediaQuery.of(context).size.width;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          print('Container clicked!');
+          onpressed();
         },
-        child: Container(
-          width: 400,
-          height: 60,
-          margin: const EdgeInsets.only(top: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: Center(
-                  child: Icon(
-                    buttonIcon,
-                    color: Colors.black,
-                    size: 32,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(
+        child: Center(
+          child: Container(
+            width: widthSize * 0.85,
+            height: 45,
+            margin: const EdgeInsets.only(top: 5),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black45, width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: Center(
+                    child: Icon(
+                      buttonIcon,
                       color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      size: 24,
                     ),
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      buttonText,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class Logout extends StatelessWidget {
+  const Logout({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(
+          minWidth: 300,
+          maxWidth: 500,
+        ),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 239, 237, 237),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Container(
+                child: const Text(
+                  "Are You Sure You Want to Logout?",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    decoration: TextDecoration.none,
+                    color: Colors.black,
+                    textBaseline: null,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    height: 50,
+                    margin: const EdgeInsets.all(5),
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    height: 50,
+                    margin: const EdgeInsets.all(5),
+                    child: ElevatedButton(
+                      onPressed: () => logout(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text('Logout'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
