@@ -10,20 +10,26 @@ Future<LOGIN_RESPONSE> submitLoginForm(
     {required String email, required String password}) async {
   try {
     Map<String, String> payload = _createPayload(email.trim(), password.trim());
-
     String url = "/api/client/login/";
     http.Response response = await _postRequest(url, payload);
-
-    var responseBody = jsonDecode(response.body);
+    Map<String, dynamic> responseBody = jsonDecode(response.body);
 
     if (response.statusCode == 401) {
       throw LOGIN_RESPONSE.INCORRECT_CREDENTIALS;
     } else if (response.statusCode >= 500) {
       throw LOGIN_RESPONSE.SERVER_ERROR;
     } else {
-      return _handleSuccessResponse(responseBody);
+      if (responseBody.containsKey("state")) {
+        String state = responseBody["state"];
+        if (state.toUpperCase() == "SUCCESS") {
+          return _handleSuccessResponse(responseBody['data']);
+        }
+        throw Exception("LOGIN WRONG STATE");
+      }
+      throw Exception("INVALID SERVER RESPONSE");
     }
   } catch (e) {
+    print("An Exception occured function submitLoginForm $e");
     return LOGIN_RESPONSE.SERVER_ERROR;
   }
 }
@@ -38,16 +44,18 @@ Map<String, String> _createPayload(String email, String password) {
 }
 
 LOGIN_RESPONSE _handleSuccessResponse(Map<String, dynamic> responseBody) {
-  if (responseBody["state"] == "SUCCESS") {
-    Map<String, dynamic> data = responseBody["data"];
-    if (data.containsKey('token')) {
-      _saveAuthToken(data['token']!);
+  print(responseBody);
+  try {
+    String? token = responseBody["token"];
+    if (token != null) {
+      _saveAuthToken(token);
       return LOGIN_RESPONSE.SUCCESS;
     } else {
-      return LOGIN_RESPONSE.SERVER_ERROR;
+      return LOGIN_RESPONSE.BAD_INPUTS;
     }
-  } else {
-    return LOGIN_RESPONSE.BAD_INPUTS;
+  } on Exception catch (e) {
+    print("An error occurd function _handleSuccessResponse $e");
+    rethrow;
   }
 }
 
