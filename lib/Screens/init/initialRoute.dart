@@ -16,19 +16,19 @@ class InitialScreen extends StatelessWidget {
       home: Scaffold(
         body: FutureBuilder(
           future: AuthManager.initialize(),
-          builder: _initialScreen(),
+          builder: (context, snapshot) {
+            return _buildInitialScreen(context, snapshot);
+          },
         ),
       ),
     );
   }
-}
 
-_initialScreen() {
-  navigateToWelcomePage(BuildContext context) {
+  void navigateToWelcomePage(BuildContext context) {
     AutoRouter.of(context).push(const WelcomeRoute()).then((value) => {});
   }
 
-  navigateToHomePage(BuildContext context) {
+  void navigateToHomePage(BuildContext context) {
     AutoRouter.of(context).push(const HomeRoute()).then((value) => {});
   }
 
@@ -41,13 +41,13 @@ _initialScreen() {
     );
   }
 
-  return (
+  Widget _buildInitialScreen(
     BuildContext context,
     AsyncSnapshot<INITIALIZATION_RESPONSE> snapshot,
   ) {
     if (snapshot.connectionState == ConnectionState.done) {
       if (snapshot.hasError) {
-        AutoRouter.of(context).push(const WelcomeRoute()).then((value) => {});
+        navigateToWelcomePage(context);
       } else if (snapshot.hasData) {
         INITIALIZATION_RESPONSE? data = snapshot.data;
 
@@ -59,5 +59,5 @@ _initialScreen() {
     } else {
       return waitingWidget();
     }
-  };
+  }
 }
