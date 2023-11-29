@@ -49,8 +49,6 @@ Future<SIGN_UP_RESULT> makeSignUpRequest({
     );
 
     final Map<String, dynamic> responseBody = jsonDecode(response.body);
-    print(responseBody);
-    print(response.statusCode);
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       dynamic data = responseBody['data'];
       if (data.containsKey('token')) {
