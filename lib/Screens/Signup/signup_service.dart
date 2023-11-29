@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 Future<CHECKING_DEVICE> checkDeviceID(String deviceId) async {
   try {
     Map<String, String> queries = {"device_id": deviceId};
-    String endpoint = '/api/client/admin/check-device/';
+    String endpoint = '/api/client/device/check-device/';
 
     http.Response response =
         await Request.get(endpoint: endpoint, queries: queries);
@@ -20,7 +20,11 @@ Future<CHECKING_DEVICE> checkDeviceID(String deviceId) async {
     }
 
     return CHECKING_DEVICE.INTERNAL_SERVER_ERROR;
+  } on http.ClientException catch (clientException) {
+    print("CLIENT Exception $clientException");
+    return CHECKING_DEVICE.INTERNAL_SERVER_ERROR;
   } catch (e) {
+    print('Error in checkDeviceID: $e');
     return CHECKING_DEVICE.INTERNAL_SERVER_ERROR;
   }
 }
@@ -45,7 +49,9 @@ Future<SIGN_UP_RESULT> makeSignUpRequest({
     );
 
     final Map<String, dynamic> responseBody = jsonDecode(response.body);
-    if (response.statusCode == 201) {
+    print(responseBody);
+    print(response.statusCode);
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
       dynamic data = responseBody['data'];
       if (data.containsKey('token')) {
         // Open authToken [HiveBox]
