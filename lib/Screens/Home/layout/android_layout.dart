@@ -1,9 +1,14 @@
 import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Widget/profile.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
 class HomePageAndroidLayout extends StatefulWidget {
-  const HomePageAndroidLayout({Key? key}) : super(key: key);
+  Widget widgetContent;
+  HomePageAndroidLayout({Key? key, required this.widgetContent})
+      : super(key: key);
 
   @override
   _HomePageAndroidLayoutState createState() => _HomePageAndroidLayoutState();
@@ -12,6 +17,7 @@ class HomePageAndroidLayout extends StatefulWidget {
 class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
   int _selectedIndex = 0;
   bool showNotifications = false;
+  Widget? currentPage;
 
   showNotificationPanel() {
     setState(() {
@@ -23,12 +29,14 @@ class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => print('Clicked YAL Brooo'),
       child: Scaffold(
-        appBar: TopAppBar(
+        appBar: CustomTopAppBar(
           toggleNotificationPanel: showNotificationPanel,
         ),
-        body: HomePageContent(showNotificationPanel: showNotifications),
+        body: HomePageContent(
+          showNotificationPanel: showNotifications,
+          showCurrentPage: widget.widgetContent,
+        ),
         bottomNavigationBar: _buildBottomNavigationBar(),
       ),
     );
@@ -104,16 +112,30 @@ class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (_selectedIndex == 4) displayProfileBottomSheet(context);
+    if (index != _selectedIndex) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      if (_selectedIndex == 4) displayProfileBottomSheet(context);
+
+      const Map<int, PageRouteInfo<void>> listOfWidget = {
+        0: DashboardRoute(),
+        1: AgentsRoute(),
+        3: DevicesRoute(),
+      };
+
+      if (listOfWidget[_selectedIndex] != null) {
+        AutoRouter.of(context).push(
+          listOfWidget[_selectedIndex] ?? const DashboardRoute(),
+        );
+      }
+    }
   }
 }
 
-class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomTopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function? toggleNotificationPanel;
-  const TopAppBar({super.key, this.toggleNotificationPanel});
+  const CustomTopAppBar({super.key, this.toggleNotificationPanel});
 
   Container _makeIconContainer(IconData icon, onPressed) {
     double size = 36;
@@ -163,8 +185,12 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class HomePageContent extends StatelessWidget {
   final bool? showNotificationPanel;
-  const HomePageContent({Key? key, this.showNotificationPanel})
-      : super(key: key);
+  final Widget? showCurrentPage;
+  const HomePageContent({
+    Key? key,
+    this.showNotificationPanel,
+    required this.showCurrentPage,
+  }) : super(key: key);
 
   Widget _notificationPanel() {
     return showNotificationPanel == true
@@ -196,8 +222,28 @@ class HomePageContent extends StatelessWidget {
         Container(
           color: Colors.white,
         ),
+        // showCurrentPage,
+        if (showCurrentPage != null) showCurrentPage as Widget,
+
         _notificationPanel()
       ],
     );
   }
 }
+
+/*
+class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Scaffold(
+        bottomNavigationBar: const BottomAppBar(),
+        body: Container(
+          child: const SearchScreen(),
+        ),
+      ),
+    );
+  }
+}
+*/
