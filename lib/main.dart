@@ -7,8 +7,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-  ]);
-  runApp(MyApp());
+    DeviceOrientation.portraitDown,
+  ]).then((_) => runApp(MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -29,9 +29,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     AppRouter appRouter = AppRouter();
     return SafeArea(
-        child: MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: appRouter.config(),
-    ));
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: appRouter.config(),
+      ),
+    );
   }
 }
