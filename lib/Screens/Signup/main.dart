@@ -81,9 +81,9 @@ class _MyAppState extends State<MyApp> {
       if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.data != null) {
           String data = snapshot.data as String;
-          String dataAfterReomvingHyphen = data.replaceAll('-', '');
+          // String dataAfterReomvingHyphen = data.replaceAll('-', '');
 
-          return _accessToSignupForm(dataAfterReomvingHyphen);
+          return _accessToSignupForm(data);
         } else {
           return const Text("Will be here as soon as possible 😊");
         }
