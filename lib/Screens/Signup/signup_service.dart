@@ -63,7 +63,7 @@ Future<SIGN_UP_RESULT> makeSignUpRequest({
 
         // save the authToken instance
         await authBox.put('token', makeToken);
-
+        await authBox.close();
         // Close the box
         await Hive.close();
         return SIGN_UP_RESULT.SUCCESS;

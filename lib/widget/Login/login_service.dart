@@ -66,5 +66,6 @@ void _saveAuthToken(String token) async {
     expiresIn: 3600,
   );
   await authBox.put('token', makeToken);
+  await authBox.close();
   await Hive.close();
 }
