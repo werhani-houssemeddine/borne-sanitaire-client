@@ -19,5 +19,6 @@ class AppRouter extends $AppRouter {
           ],
         ),
         AutoRoute(page: ProfileRoute.page),
+        AutoRoute(page: EditProfile.page),
       ];
 }
