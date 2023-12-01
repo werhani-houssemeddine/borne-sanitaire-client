@@ -10,10 +10,11 @@ Uri _makeURI({required String endpoint, Map<String, String>? queries}) {
 }
 
 class Request {
-  static get(
-      {required String endpoint,
-      Map<String, String>? headers,
-      Map<String, String>? queries}) async {
+  static get({
+    required String endpoint,
+    Map<String, String>? headers,
+    Map<String, String>? queries,
+  }) async {
     return await http.get(_makeURI(endpoint: endpoint, queries: queries),
         headers: headers);
   }
@@ -66,5 +67,19 @@ class SecureRequest {
     } catch (e) {
       rethrow;
     }
+  }
+
+  static Future<http.Response> get({
+    required String endpoint,
+    Map<String, String>? headers,
+    Map<String, String>? queries,
+  }) async {
+    if (CurrentUser.instance?.token == null) throw Exception();
+
+    Map<String, String> headers = {
+      "Authorization": CurrentUser.instance!.token
+    };
+
+    return await Request.get(endpoint: endpoint, headers: headers);
   }
 }
