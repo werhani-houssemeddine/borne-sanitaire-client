@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Service/agent.dart';
 import 'package:flutter/material.dart';
 
 // ignore: camel_case_types, constant_identifier_names
@@ -33,19 +34,24 @@ class _AgentsScreen extends State<AgentsScreen> {
   @override
   Widget build(BuildContext context) {
     print("Hello $currentScreen");
-    return Container(
-      padding: const EdgeInsets.all(10),
-      height: double.infinity,
-      width: double.infinity,
-      child: Column(
-        children: [
-          const AgentSearchBar(),
-          FilterAgent(
-            setCurrentScreenPage: changeCurrentPage,
+    return FutureBuilder(
+      future: Agent.getAllAgents(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return Container(
+          padding: const EdgeInsets.all(10),
+          height: double.infinity,
+          width: double.infinity,
+          child: Column(
+            children: [
+              const AgentSearchBar(),
+              FilterAgent(
+                setCurrentScreenPage: changeCurrentPage,
+              ),
+              const ListOfAgent(),
+            ],
           ),
-          const ListOfAgent(),
-        ],
-      ),
+        );
+      },
     );
   }
 }
