@@ -163,6 +163,9 @@ class EditProfileUserInfo extends StatelessWidget {
       margin: const EdgeInsets.all(5.0),
       child: Text(
         title,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
+        softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.normal,
           color: color,
