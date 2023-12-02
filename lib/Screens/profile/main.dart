@@ -299,7 +299,7 @@ class MakeCustomLink extends StatelessWidget {
                             decoration: TextDecoration.none,
                             fontStyle: FontStyle.normal,
                             fontSize: 13,
-                            letterSpacing: 1.5,
+                            letterSpacing: 1,
                           ),
                         ),
                       ),
