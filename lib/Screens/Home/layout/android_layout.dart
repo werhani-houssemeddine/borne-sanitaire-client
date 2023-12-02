@@ -1,13 +1,12 @@
 import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Widget/profile.dart';
-import 'package:borne_sanitaire_client/Screens/Home/Screen/agents.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
 class HomePageAndroidLayout extends StatefulWidget {
-  Widget widgetContent;
-  HomePageAndroidLayout({Key? key, required this.widgetContent})
+  final Widget widgetContent;
+  const HomePageAndroidLayout({Key? key, required this.widgetContent})
       : super(key: key);
 
   @override
@@ -37,99 +36,9 @@ class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
           showNotificationPanel: showNotifications,
           showCurrentPage: widget.widgetContent,
         ),
-        bottomNavigationBar: _buildBottomNavigationBar(),
+        bottomNavigationBar: const HomeBottomNavigationBar(),
       ),
     );
-  }
-
-  Widget _buildBottomNavigationBar() {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.purpleAccent.shade700,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(20.0),
-            ),
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.transparent,
-            items: <BottomNavigationBarItem>[
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.people),
-                label: 'Agents',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(),
-                label: '',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.devices),
-                label: 'Devices',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.grey,
-            onTap: _onItemTapped,
-            type: BottomNavigationBarType.fixed,
-          ),
-        ),
-        Positioned(
-          bottom: 20.0,
-          left: MediaQuery.of(context).size.width / 2 - 30.0,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(
-                color: Colors.white,
-                width: 3.0,
-              ),
-            ),
-            child: FloatingActionButton(
-              onPressed: () {
-                AddAgentBuilder(context);
-              },
-              backgroundColor: Colors.white,
-              child: const Icon(
-                Icons.add,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _onItemTapped(int index) {
-    if (index != _selectedIndex) {
-      setState(() {
-        _selectedIndex = index;
-      });
-      if (_selectedIndex == 4) displayProfileBottomSheet(context);
-
-      const Map<int, PageRouteInfo<void>> listOfWidget = {
-        0: DashboardRoute(),
-        1: AgentsRoute(),
-        3: DevicesRoute(),
-      };
-
-      if (listOfWidget[_selectedIndex] != null) {
-        AutoRouter.of(context).push(
-          listOfWidget[_selectedIndex] ?? const DashboardRoute(),
-        );
-      }
-    }
   }
 }
 
@@ -247,3 +156,91 @@ class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
   }
 }
 */
+
+class HomeBottomNavigationBar extends StatefulWidget {
+  const HomeBottomNavigationBar({Key? key}) : super(key: key);
+
+  @override
+  _HomeBottomNavigationBarState createState() =>
+      _HomeBottomNavigationBarState();
+}
+
+class _HomeBottomNavigationBarState extends State<HomeBottomNavigationBar> {
+  int _selectedIndex = 0;
+
+  void Function(int) _onItemTapped(BuildContext context) {
+    return (int index) {
+      if (index == 2) {
+        AddAgentBuilder(context);
+        return;
+      }
+      if (index != _selectedIndex) {
+        setState(() => _selectedIndex = index);
+
+        const Map<int, PageRouteInfo<void>> listOfWidget = {
+          0: DashboardRoute(),
+          1: AgentsRoute(),
+          3: DevicesRoute(),
+          4: ProfileRoute(),
+        };
+
+        if (listOfWidget[_selectedIndex] != null) {
+          AutoRouter.of(context).push(
+            listOfWidget[_selectedIndex] ?? const DashboardRoute(),
+          );
+        }
+      }
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          height: 60,
+          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            color: Colors.blue.shade50,
+          ),
+          child: BottomNavigationBar(
+            elevation: 0,
+            currentIndex: _selectedIndex,
+            iconSize: 25,
+            onTap: _onItemTapped(context),
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.transparent,
+            selectedItemColor: const Color.fromRGBO(1, 65, 189, 1),
+            unselectedItemColor: Colors.blue.shade300,
+            mouseCursor: SystemMouseCursors.click,
+            showUnselectedLabels: false,
+            showSelectedLabels: false,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.people),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add_circle_outline_outlined),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.devices),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: '',
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
