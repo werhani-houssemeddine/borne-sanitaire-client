@@ -11,7 +11,7 @@
 import 'package:auto_route/auto_route.dart' as _i11;
 import 'package:borne_sanitaire_client/Screens/Home/main.dart' as _i5;
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents.dart' as _i1;
-import 'package:borne_sanitaire_client/Screens/Home/Screen/dashboard.dart'
+import 'package:borne_sanitaire_client/Screens/Home/Screen/dashboard/main.dart'
     as _i2;
 import 'package:borne_sanitaire_client/Screens/Home/Screen/devices.dart' as _i3;
 import 'package:borne_sanitaire_client/Screens/init/initialRoute.dart' as _i6;
