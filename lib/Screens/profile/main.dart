@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/utils/user.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,6 @@ class ProfileScreen extends StatelessWidget {
         children: [
           ProfileScreenAppBar(),
           ProfileScreenUserInfo(),
-          Divider(),
           ProfileScreenLinks()
         ],
       ),
@@ -44,13 +44,13 @@ class ProfileScreenAppBar extends StatelessWidget {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                print("Tapped");
                 Navigator.of(context).pop();
               },
               child: Center(
                 child: Container(
                   width: 30,
                   height: 30,
+                  padding: const EdgeInsets.only(left: 5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.blue.shade50,
@@ -64,15 +64,18 @@ class ProfileScreenAppBar extends StatelessWidget {
               ),
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Center(
-              child: Text(
-                "Profile",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  decoration: TextDecoration.none,
-                  color: Colors.black,
+              child: Container(
+                margin: const EdgeInsets.only(right: 12),
+                child: const Text(
+                  "Profile",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    decoration: TextDecoration.none,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
@@ -138,16 +141,17 @@ class ProfileScreenUserInfo extends StatelessWidget {
     );
   }
 
-  Widget editProfileWidget() {
+  /*Widget editProfileWidget(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
+        onTap: () => nvaigateToEditProfile(context),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
           margin: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: Colors.blue,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(7),
           ),
           child: const Text(
             "Edit Profile",
@@ -161,6 +165,10 @@ class ProfileScreenUserInfo extends StatelessWidget {
         ),
       ),
     );
+  }*/
+
+  void nvaigateToEditProfile(BuildContext context) {
+    AutoRouter.of(context).push(const EditProfile()).then((value) => null);
   }
 
   @override
@@ -173,7 +181,7 @@ class ProfileScreenUserInfo extends StatelessWidget {
         children: [
           profilePhoto(),
           showEmailAndFullName(),
-          editProfileWidget(),
+          //editProfileWidget(context),
         ],
       ),
     );
@@ -185,16 +193,43 @@ class ProfileScreenLinks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MakeCustomLink(linkTitle: "Settings"),
-          MakeCustomLink(linkTitle: "User Management"),
-          MakeCustomLink(linkTitle: "Prefferences"),
-          Divider(),
-          MakeCustomLink(linkTitle: "Log out"),
-        ],
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.only(top: 54),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            MakeCustomLink(
+              linkTitle: "Settings",
+              icon: Icons.settings,
+              backgroundColor: Colors.blue,
+              onPressed: () => {},
+            ),
+            const Divider(),
+            MakeCustomLink(
+              linkTitle: "Account",
+              icon: Icons.account_circle_sharp,
+              backgroundColor: Colors.green,
+              onPressed: () => AutoRouter.of(context).navigate(
+                const EditProfile(),
+              ),
+            ),
+            const Divider(),
+            MakeCustomLink(
+              linkTitle: "Prefferences",
+              icon: Icons.settings,
+              backgroundColor: Colors.purpleAccent,
+              onPressed: () => {},
+            ),
+            const Divider(),
+            MakeCustomLink(
+              linkTitle: "Log out",
+              icon: Icons.logout,
+              backgroundColor: Colors.redAccent,
+              onPressed: () => {},
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -202,12 +237,23 @@ class ProfileScreenLinks extends StatelessWidget {
 
 class MakeCustomLink extends StatelessWidget {
   final String linkTitle;
-  const MakeCustomLink({Key? key, required this.linkTitle}) : super(key: key);
+  final IconData icon;
+  final Color? backgroundColor;
+  final void Function() onPressed;
+
+  const MakeCustomLink({
+    Key? key,
+    required this.linkTitle,
+    required this.icon,
+    required this.onPressed,
+    this.backgroundColor,
+  }) : super(key: key);
 
   Widget gestureDectorBuilder(Widget widget) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
+        onTap: onPressed,
         child: widget,
       ),
     );
@@ -219,44 +265,58 @@ class MakeCustomLink extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Center(
-            child: Container(
-              width: 30,
-              height: 30,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
-                color: Colors.blue.shade50,
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black87,
-                size: 12,
-              ),
-            ),
-          ),
           Expanded(
             child: gestureDectorBuilder(
-              Text(
-                linkTitle,
-                style: const TextStyle(
-                  color: Colors.black,
-                  decoration: TextDecoration.none,
-                  fontSize: 17,
-                ),
-              ),
-            ),
-          ),
-          gestureDectorBuilder(
-            const Center(
-              child: SizedBox(
-                width: 30,
-                height: 30,
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.black87,
-                  size: 18,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    // textBaseline: TextBaseline.ideographic,
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        padding: const EdgeInsets.all(2),
+                        margin: const EdgeInsets.only(right: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(7),
+                          color: backgroundColor,
+                        ),
+                        child: Icon(
+                          icon,
+                          size: 24,
+                          weight: 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          linkTitle,
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            decoration: TextDecoration.none,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 13,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Center(
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black87,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
