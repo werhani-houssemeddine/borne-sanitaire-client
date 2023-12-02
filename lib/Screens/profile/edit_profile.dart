@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/profile/update_fields.dart';
+import 'package:borne_sanitaire_client/Screens/profile/utils.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -27,27 +29,6 @@ class _EditProfileState extends State<EditProfile> {
           Divider(),
           EditProfileDeleteAccount(),
         ],
-      ),
-    );
-  }
-}
-
-class MakeGestureDetector extends StatelessWidget {
-  final Widget child;
-  final void Function() onPressed;
-  const MakeGestureDetector({
-    Key? key,
-    required this.child,
-    required this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onPressed,
-        child: child,
       ),
     );
   }
@@ -225,12 +206,42 @@ class EditProfileUserInfo extends StatelessWidget {
     );
   }
 
-  List<TableRow> tableRows() {
+  void Function() navigateToEditPasswordScreen(BuildContext context) {
+    return () {
+      displayChangePasswordBottomSheet(context, "Password");
+    };
+  }
+
+  void Function() navigateToEditNameScreen(BuildContext context) {
+    return () {
+      displayChangePasswordBottomSheet(context, "Name");
+    };
+  }
+
+  void Function() navigateToEditPhoneNumberScreen(BuildContext context) {
+    return () {
+      displayChangePasswordBottomSheet(context, "Phone Number");
+    };
+  }
+
+  List<TableRow> tableRows(BuildContext context) {
     return [
-      singleRow("Name", "Werhani Houssemeddine"),
+      singleRow(
+        "Name",
+        "Werhani Houssemeddine",
+        onPressed: navigateToEditNameScreen(context),
+      ),
       singleRow("Email address", "houssemwuerhani@gmail.com"),
-      singleRow("Phone Number", "+216 56 561 363"),
-      singleRow("Password", "xxxx xxxx xxxx xxxx", onPressed: () => {})
+      singleRow(
+        "Phone Number",
+        "+216 56 561 363",
+        onPressed: navigateToEditPhoneNumberScreen(context),
+      ),
+      singleRow(
+        "Password",
+        "xxxx xxxx xxxx xxxx",
+        onPressed: navigateToEditPasswordScreen(context),
+      ),
     ];
   }
 
@@ -245,7 +256,7 @@ class EditProfileUserInfo extends StatelessWidget {
           1: FlexColumnWidth(2),
           2: FixedColumnWidth(30),
         },
-        children: tableRows(),
+        children: tableRows(context),
       ),
     );
   }
