@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 import 'package:borne_sanitaire_client/Screens/Login/form.dart';
@@ -10,7 +11,7 @@ Widget LoginScreen(BuildContext context) {
   return Container(
     height: currentSize.height,
     width: currentSize.width,
-    color: const Color.fromRGBO(25, 4, 130, 1),
+    color: AppColors.primary,
     child: const Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.min,
@@ -40,10 +41,10 @@ class LoginScreenAppBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.white,
               ),
-              child: const Center(
+              child: Center(
                 child: Icon(
                   Icons.arrow_back_ios,
-                  color: Color.fromRGBO(25, 4, 130, 1),
+                  color: AppColors.primary,
                   size: 20,
                 ),
               ),

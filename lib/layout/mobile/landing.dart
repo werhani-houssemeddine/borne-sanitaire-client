@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeMobileScreen extends StatelessWidget {
@@ -31,9 +32,9 @@ class WelcomeMobileScreen extends StatelessWidget {
             child: Container(
               width: 150,
               height: 150,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(25, 4, 130, 1),
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(150),
                 ),
               ),
@@ -63,9 +64,9 @@ class WelcomeMobileScreen extends StatelessWidget {
                 height: screenHeight * 0.35,
                 padding: const EdgeInsets.all(8.0),
                 margin: EdgeInsets.only(left: screenWidth * 0.05),
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(25, 4, 130, 1),
-                  borderRadius: BorderRadius.vertical(
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(20),
                   ),
                 ),
