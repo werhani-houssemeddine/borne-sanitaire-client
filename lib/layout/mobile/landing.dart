@@ -86,8 +86,8 @@ class WelcomeMobileScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 18),
                         Text(
-                          "Sign in to access the application, or try"
-                          "scanning the qr code for your device to create"
+                          "Sign in to access the application, or try "
+                          "scanning your device qr code to create "
                           "new account.",
                           style: TextStyle(
                             fontSize: 12,
@@ -100,6 +100,7 @@ class WelcomeMobileScreen extends StatelessWidget {
                     const SizedBox(height: 18),
                     Row(
                       mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         // MakeGestureDetector(child: child, onPressed: onPressed)
                         ButtonLink(
