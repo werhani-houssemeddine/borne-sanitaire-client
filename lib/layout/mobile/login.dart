@@ -1,45 +1,90 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:borne_sanitaire_client/Screens/profile/utils.dart';
 import 'package:flutter/material.dart';
 
-import 'package:borne_sanitaire_client/widget/Login/form.dart';
+import 'package:borne_sanitaire_client/Screens/Login/form.dart';
 
 Widget LoginScreen(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(),
-    resizeToAvoidBottomInset: false,
-    body: SingleChildScrollView(
-      child: _CustomLoginBackground(context),
+  Size currentSize = MediaQuery.of(context).size;
+  return Container(
+    height: currentSize.height,
+    width: currentSize.width,
+    color: const Color.fromRGBO(25, 4, 130, 1),
+    child: const Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        LoginScreenAppBar(),
+        LoginScreenForm(),
+      ],
     ),
   );
 }
 
-Widget _CustomLoginBackground(BuildContext context) {
-  Size currentSize = MediaQuery.of(context).size;
-  return SizedBox(
-    height: currentSize.height,
-    width: currentSize.width,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Flexible(
-          flex: 2,
-          fit: FlexFit.loose,
-          child: Card(
-            elevation: 20,
-            margin: const EdgeInsets.all(10),
-            // borderRadius: BorderRadius.all(Radius.circular(50)),
+class LoginScreenAppBar extends StatelessWidget {
+  const LoginScreenAppBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 55,
+      child: Row(
+        children: [
+          MakeGestureDetector(
             child: Container(
-              margin: const EdgeInsets.all(10),
+              height: 30,
+              width: 30,
+              padding: const EdgeInsets.only(left: 5),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
               ),
-              child: const Center(child: LoginFormWidget()),
+              child: const Center(
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: Color.fromRGBO(25, 4, 130, 1),
+                  size: 20,
+                ),
+              ),
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LoginScreenForm extends StatelessWidget {
+  const LoginScreenForm({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final double currentHeight = MediaQuery.of(context).size.height;
+    final double currentWidth = MediaQuery.of(context).size.height;
+    return Container(
+      height: currentHeight * 0.85,
+      width: currentWidth,
+      padding: const EdgeInsets.all(12.0),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+        color: Colors.white,
+      ),
+      child: const Column(
+        children: [
+          Text(
+            "Sign In",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-        if (currentSize.height > 500) const Spacer(flex: 1),
-      ],
-    ),
-  );
+          LoginFormWidget(),
+        ],
+      ),
+    );
+  }
 }
