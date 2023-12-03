@@ -1,5 +1,5 @@
 import 'package:borne_sanitaire_client/Screens/profile/change_password.dart';
-import 'package:borne_sanitaire_client/Screens/profile/utils.dart';
+import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:flutter/material.dart';
 
 // ignore: constant_identifier_names

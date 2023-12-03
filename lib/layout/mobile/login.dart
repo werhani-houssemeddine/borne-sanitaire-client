@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:borne_sanitaire_client/Screens/profile/utils.dart';
+import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:flutter/material.dart';
 
 import 'package:borne_sanitaire_client/Screens/Login/form.dart';
