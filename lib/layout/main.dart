@@ -9,7 +9,7 @@ import 'mobile/login.dart';
 //     (BuildContext context) => widget(context);
 
 class Landing {
-  static Mobile(BuildContext context) => LandingScreen(context);
+  static Mobile(BuildContext context) => const WelcomeMobileScreen();
   static Windows(BuildContext context) => const Text("Under Implementation");
 }
 
