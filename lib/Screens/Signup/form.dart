@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
+import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 import 'signup_service.dart' show makeSignUpRequest;
 import 'response_service.dart' show SIGN_UP_RESULT;
@@ -10,29 +12,73 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: _Form(deviceId: deviceId),
+    Size currentSize = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Container(
+        height: currentSize.height,
+        width: currentSize.width,
+        color: AppColors.primary,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SingupScreenAppBar(),
+            SignUpFormContainer(deviceId: deviceId),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _Form extends StatefulWidget {
+class SingupScreenAppBar extends StatelessWidget {
+  const SingupScreenAppBar({Key? key}) : super(key: key);
+
+  void Function() navigateToWelcomeScreen(BuildContext context) {
+    return () => AutoRouter.of(context).popUntilRoot();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 55,
+      child: Row(
+        children: [
+          MakeGestureDetector(
+            onPressed: navigateToWelcomeScreen(context),
+            child: Container(
+              height: 30,
+              width: 30,
+              padding: const EdgeInsets.only(left: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SignUpFormContainer extends StatefulWidget {
   final String deviceId;
-  const _Form({required this.deviceId});
+  const SignUpFormContainer({super.key, required this.deviceId});
 
   @override
   // ignore: library_private_types_in_public_api
   _SignUpFormState createState() => _SignUpFormState();
 }
 
-class _SignUpFormState extends State<_Form> {
+class _SignUpFormState extends State<SignUpFormContainer> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
 
@@ -52,39 +98,67 @@ class _SignUpFormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
-    String deviceId = widget.deviceId;
-    return Form(
-      key: _formKey,
+    final String deviceId = widget.deviceId;
+    final double currentHeight = MediaQuery.of(context).size.height;
+    final double currentWidth = MediaQuery.of(context).size.height;
+
+    return Container(
+      height: currentHeight * 0.85,
+      width: currentWidth,
+      padding: const EdgeInsets.all(12.0),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+        color: Colors.white,
+      ),
       child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
         children: [
-          TextFormFieldBuilder(
-            controller: UserController.emailController!,
-            labelText: 'Email',
-            prefixIcon: Icons.email,
-            validator: Validator.validateEmail,
-          ).buildWithMargin(),
-          TextFormFieldBuilder(
-            controller: UserController.usernameController!,
-            labelText: 'Username',
-            prefixIcon: Icons.person,
-            validator: Validator.validateUsername,
-          ).buildWithMargin(),
-          TextFormFieldBuilder(
-            controller: UserController.passwordController!,
-            labelText: 'Password',
-            prefixIcon: Icons.lock,
-            obscureText: _isObscure,
-            isPassword: true,
-            validator: Validator.validatePassword,
-            suffixIcon: _isObscure ? Icons.visibility_off : Icons.visibility,
-            onSuffixIconPressed: togglePasswordVisibility,
-          ).buildWithMargin(),
-          SubmitButton(
-            formKey: _formKey,
-            deviceId: deviceId,
+          const Text(
+            "Sign In",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              decoration: TextDecoration.none,
+            ),
           ),
+          Form(
+            key: _formKey,
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormFieldBuilder(
+                  controller: UserController.emailController!,
+                  labelText: 'Email',
+                  prefixIcon: Icons.email,
+                  validator: Validator.validateEmail,
+                ).buildWithMargin(),
+                TextFormFieldBuilder(
+                  controller: UserController.usernameController!,
+                  labelText: 'Username',
+                  prefixIcon: Icons.person,
+                  validator: Validator.validateUsername,
+                ).buildWithMargin(),
+                TextFormFieldBuilder(
+                  controller: UserController.passwordController!,
+                  labelText: 'Password',
+                  prefixIcon: Icons.lock,
+                  obscureText: _isObscure,
+                  isPassword: true,
+                  validator: Validator.validatePassword,
+                  suffixIcon:
+                      _isObscure ? Icons.visibility_off : Icons.visibility,
+                  onSuffixIconPressed: togglePasswordVisibility,
+                ).buildWithMargin(),
+                SubmitButton(
+                  formKey: _formKey,
+                  deviceId: deviceId,
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

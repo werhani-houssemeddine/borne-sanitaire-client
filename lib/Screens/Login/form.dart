@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/Screens/Login/interfaces.dart';
 import 'package:borne_sanitaire_client/Screens/Login/login_service.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -44,38 +45,44 @@ class MyCustomFormState extends State<LoginFormWidget> {
   }
 
   resetPassword(value) {
+    print('reset $value');
     setState(() {
       _FormInput.resetPasswordError();
     });
+    print(_FormInput.getPasswordError());
   }
 
   resetEmail(value) {
+    print('reset $value');
+
     setState(() {
       _FormInput.resetEmailError();
     });
+    print(_FormInput.getEmailError());
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
+      autovalidateMode: AutovalidateMode.disabled,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          _makeInput(
-            _FormInput.emailController,
-            _InputValidators.emailValidator,
-            resetEmail,
-            _InputDecoration.emailDecoration(
+          LoginFormInput(
+            controller: _FormInput.emailController,
+            validator: _InputValidators.emailValidator,
+            onChanged: resetEmail,
+            decoration: _InputDecoration.emailDecoration(
               _FormInput.getEmailError(),
             ),
             autofocus: true,
           ),
-          _makeInput(
-            _FormInput.passwordController,
-            _InputValidators.passwordValidator,
-            resetPassword,
-            _InputDecoration.passwordDecoration(
+          LoginFormInput(
+            controller: _FormInput.passwordController,
+            validator: _InputValidators.passwordValidator,
+            onChanged: resetPassword,
+            decoration: _InputDecoration.passwordDecoration(
               _FormInput.getPasswordError(),
             ),
             obscureText: true,
@@ -199,15 +206,15 @@ class _InputDecoration {
     return InputDecoration(
       hintText: hint,
       prefixIcon: checkIcon(),
-      prefixIconColor: error ? Colors.red : Colors.green,
-      focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.green, width: 1.0),
+      prefixIconColor: error ? Colors.red : AppColors.primary,
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.primary, width: 2.0),
       ),
       errorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red, width: 1.0),
+        borderSide: BorderSide(color: Colors.red, width: 2.0),
       ),
       border: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.green, width: 1.0),
+        borderSide: BorderSide(color: AppColors.primary, width: 2.0),
         borderRadius: BorderRadius.circular(7),
       ),
     );
@@ -217,7 +224,7 @@ class _InputDecoration {
     return makeInputDecoration(
       hint: "Enter Your Email",
       inputIcon: const Icon(Icons.person_2_rounded),
-      error: _FormInput.getEmailError(),
+      error: emailError,
     );
   }
 
@@ -225,7 +232,7 @@ class _InputDecoration {
     return makeInputDecoration(
       hint: "Enter Your Password",
       inputIcon: const Icon(Icons.lock),
-      error: _FormInput.getPasswordError(),
+      error: passwordError,
     );
   }
 }
@@ -247,17 +254,35 @@ class _CustomInput extends StatelessWidget {
   }
 }
 
-Widget _makeInput(
-    TextEditingController controller, validator, onChanged, decoration,
-    {bool autofocus = false, bool obscureText = false}) {
-  return _CustomInput(
-    input: TextFormField(
-      controller: controller,
-      validator: validator,
-      autofocus: autofocus,
-      obscureText: obscureText,
-      decoration: decoration,
-      onChanged: onChanged,
-    ),
-  );
+class LoginFormInput extends StatelessWidget {
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final bool autofocus;
+  final bool obscureText;
+  final InputDecoration? decoration;
+  const LoginFormInput({
+    Key? key,
+    required this.validator,
+    required this.onChanged,
+    required this.controller,
+    required this.decoration,
+    this.autofocus = false,
+    this.obscureText = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      child: TextFormField(
+        controller: controller,
+        validator: validator,
+        autofocus: autofocus,
+        obscureText: obscureText,
+        onChanged: (String? value) {},
+        decoration: decoration,
+      ),
+    );
+  }
 }
