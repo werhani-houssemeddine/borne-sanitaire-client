@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:borne_sanitaire_client/Service/request.dart';
 import 'package:borne_sanitaire_client/models/auth_token.dart';
-import 'package:borne_sanitaire_client/widget/Login/interfaces.dart';
+import 'package:borne_sanitaire_client/Screens/Login/interfaces.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
 

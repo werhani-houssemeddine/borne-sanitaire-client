@@ -2,8 +2,8 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
-import 'package:borne_sanitaire_client/widget/Login/interfaces.dart';
-import 'package:borne_sanitaire_client/widget/Login/login_service.dart';
+import 'package:borne_sanitaire_client/Screens/Login/interfaces.dart';
+import 'package:borne_sanitaire_client/Screens/Login/login_service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -224,7 +224,7 @@ class _InputDecoration {
   static InputDecoration passwordDecoration(bool passwordError) {
     return makeInputDecoration(
       hint: "Enter Your Password",
-      inputIcon: const Icon(Icons.password),
+      inputIcon: const Icon(Icons.lock),
       error: _FormInput.getPasswordError(),
     );
   }
