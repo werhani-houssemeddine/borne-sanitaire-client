@@ -15,7 +15,7 @@ import 'package:borne_sanitaire_client/Screens/Home/Screen/dashboard/main.dart'
     as _i2;
 import 'package:borne_sanitaire_client/Screens/Home/Screen/devices.dart' as _i3;
 import 'package:borne_sanitaire_client/Screens/init/initialRoute.dart' as _i6;
-import 'package:borne_sanitaire_client/Screens/login.dart' as _i7;
+import 'package:borne_sanitaire_client/Screens/Login/main.dart' as _i7;
 import 'package:borne_sanitaire_client/Screens/profile/edit_profile.dart'
     as _i4;
 import 'package:borne_sanitaire_client/Screens/profile/main.dart' as _i8;
