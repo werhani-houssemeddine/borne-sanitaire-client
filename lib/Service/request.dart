@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:borne_sanitaire_client/utils/user.dart';
+import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:borne_sanitaire_client/config.dart' show BASE_URL;
@@ -54,9 +55,7 @@ class SecureRequest {
     try {
       if (CurrentUser.instance?.token == null) throw Exception();
 
-      Map<String, String> headers = {
-        "Authorization": CurrentUser.instance!.token
-      };
+      headers = {...?headers, "Authorization": CurrentUser.instance!.token};
 
       return await Request.post(
         endpoint: endpoint,
@@ -76,10 +75,30 @@ class SecureRequest {
   }) async {
     if (CurrentUser.instance?.token == null) throw Exception();
 
-    Map<String, String> headers = {
-      "Authorization": CurrentUser.instance!.token
-    };
+    headers = {...?headers, "Authorization": CurrentUser.instance!.token};
 
     return await Request.get(endpoint: endpoint, headers: headers);
   }
+}
+
+upload(File imageFile) async {
+  if (CurrentUser.instance?.token == null) throw Exception();
+
+  var request = http.MultipartRequest(
+    "POST",
+    _makeURI(endpoint: '/api/client/update/profile-photo/'),
+  );
+
+  request.files.add(
+    http.MultipartFile.fromBytes(
+        'picture', File(imageFile.path).readAsBytesSync(),
+        filename: imageFile.path),
+  );
+
+  request.headers.putIfAbsent(
+    "Authorization",
+    () => CurrentUser.instance!.token,
+  );
+  print("boom");
+  return await request.send();
 }
