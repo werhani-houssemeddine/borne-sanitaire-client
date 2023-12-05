@@ -49,7 +49,7 @@ class LoginScreenAppBar extends StatelessWidget {
                 ),
               ),
             ),
-            onPressed: () {},
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ],
       ),
