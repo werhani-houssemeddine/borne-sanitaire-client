@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:borne_sanitaire_client/utils/hive.dart';
 import 'package:borne_sanitaire_client/Service/request.dart';
 import 'package:http/http.dart' as http;
@@ -11,19 +12,27 @@ class AuthManager {
   static Future<INITIALIZATION_RESPONSE> initialize() async {
     try {
       String? token = await _getToken();
+
       if (token != null) {
         http.Response response = await _makeRequest(token);
-
         if (response.statusCode == HttpStatus.unauthorized) {
           return _handleFailureRequest();
         } else if (response.statusCode == HttpStatus.ok) {
-          return _handleSuccessRequest(jsonDecode(response.body));
+          Map<String, dynamic> body = jsonDecode(response.body);
+
+          if (body.containsKey('data')) {
+            return _handleSuccessRequest(
+              body['data'],
+              token,
+            );
+          }
         }
         throw Exception('Unexpected status code: ${response.statusCode}');
       } else {
         return INITIALIZATION_RESPONSE.LOGIN;
       }
     } catch (e) {
+      print(e);
       return INITIALIZATION_RESPONSE.ERROR;
     }
   }
@@ -53,10 +62,22 @@ class AuthManager {
   }
 
   static INITIALIZATION_RESPONSE _handleSuccessRequest(
-      Map<String, String> body) {
-    return body['state'] == 'SUCCESS'
-        ? INITIALIZATION_RESPONSE.HOME
-        : INITIALIZATION_RESPONSE.LOGIN;
+    Map<String, dynamic> data,
+    String token,
+  ) {
+    if (data.containsKey('user') == false) {
+      return INITIALIZATION_RESPONSE.ERROR;
+    }
+
+    Map<String, dynamic> user = data['user'];
+    CurrentUser.createInstance(
+      email: user['email'],
+      username: user['username'],
+      id: data['id'],
+      role: user['role'],
+      token: token,
+    );
+    return INITIALIZATION_RESPONSE.HOME;
   }
 
   static INITIALIZATION_RESPONSE _handleFailureRequest() {
