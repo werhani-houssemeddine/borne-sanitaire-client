@@ -46,6 +46,7 @@ class _AgentsScreen extends State<AgentsScreen> {
               const AgentSearchBar(),
               FilterAgent(
                 setCurrentScreenPage: changeCurrentPage,
+                currentScreen: currentScreen,
               ),
               const ListOfAgent(),
             ],
@@ -95,15 +96,22 @@ class AgentSearchBar extends StatelessWidget {
 
 class FilterAgent extends StatelessWidget {
   final void Function(CURRENT_AGNT_SCREEN) setCurrentScreenPage;
+  final CURRENT_AGNT_SCREEN currentScreen;
   const FilterAgent({
     Key? key,
     required this.setCurrentScreenPage,
+    required this.currentScreen,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 70,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: Colors.blue.shade100,
+      ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -114,21 +122,25 @@ class FilterAgent extends StatelessWidget {
               filterText: "All",
               currentScreen: CURRENT_AGNT_SCREEN.ALL,
               setCurrentScreenPage: setCurrentScreenPage,
+              isItCurrentScreen: currentScreen == CURRENT_AGNT_SCREEN.ALL,
             ),
             FilterAgentButton(
               filterText: "Actif",
               currentScreen: CURRENT_AGNT_SCREEN.ACTIF,
               setCurrentScreenPage: setCurrentScreenPage,
+              isItCurrentScreen: currentScreen == CURRENT_AGNT_SCREEN.ACTIF,
             ),
             FilterAgentButton(
               filterText: "Pending",
               currentScreen: CURRENT_AGNT_SCREEN.PENDING,
               setCurrentScreenPage: setCurrentScreenPage,
+              isItCurrentScreen: currentScreen == CURRENT_AGNT_SCREEN.PENDING,
             ),
             FilterAgentButton(
               filterText: "Archive",
               currentScreen: CURRENT_AGNT_SCREEN.ARCHEIVED,
               setCurrentScreenPage: setCurrentScreenPage,
+              isItCurrentScreen: currentScreen == CURRENT_AGNT_SCREEN.ARCHEIVED,
             ),
           ],
         ),
@@ -140,6 +152,8 @@ class FilterAgent extends StatelessWidget {
 class FilterAgentButton extends StatelessWidget {
   final String filterText;
   final CURRENT_AGNT_SCREEN currentScreen;
+  final bool isItCurrentScreen;
+
   final void Function(CURRENT_AGNT_SCREEN) setCurrentScreenPage;
 
   const FilterAgentButton({
@@ -147,6 +161,7 @@ class FilterAgentButton extends StatelessWidget {
     required this.filterText,
     required this.currentScreen,
     required this.setCurrentScreenPage,
+    required this.isItCurrentScreen,
   }) : super(key: key);
 
   @override
@@ -159,20 +174,26 @@ class FilterAgentButton extends StatelessWidget {
         },
         child: Container(
           constraints: const BoxConstraints(
-            minHeight: 25,
+            minHeight: 20,
             maxHeight: 30,
             minWidth: 80,
           ),
-          margin: const EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 1),
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.blue.shade50,
+            borderRadius: BorderRadius.circular(15),
+            color:
+                isItCurrentScreen ? Colors.indigo.shade800 : Colors.transparent,
           ),
           child: Center(
             child: Text(
               filterText,
-              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontStyle: FontStyle.italic,
+                fontSize: 16,
+                color: isItCurrentScreen ? Colors.white : Colors.black,
+              ),
             ),
           ),
         ),
@@ -184,9 +205,76 @@ class FilterAgentButton extends StatelessWidget {
 class ListOfAgent extends StatelessWidget {
   const ListOfAgent({Key? key}) : super(key: key);
 
+  TableCell addMarginToTableCell(Widget child) {
+    return TableCell(
+      child: Container(
+        margin: const EdgeInsets.all(5.0),
+        child: child,
+      ),
+    );
+  }
+
+  Widget profilePhotoCell() {
+    return Container(
+      height: 30,
+      width: 30,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.red,
+      ),
+    );
+  }
+
+  Text agentNameCell({String? name}) {
+    return Text(
+      name ?? 'Werhani Houssemeddine',
+      style: const TextStyle(
+        fontWeight: FontWeight.w700,
+        fontSize: 12,
+      ),
+    );
+  }
+
+  Widget stateAgentCell() {
+    return const Text(
+      'Active',
+      style: TextStyle(
+        fontWeight: FontWeight.w500,
+        fontSize: 12,
+      ),
+    );
+  }
+
+  TableRow makeAgentRow({String? name}) {
+    return TableRow(
+      children: [
+        addMarginToTableCell(profilePhotoCell()),
+        addMarginToTableCell(agentNameCell(name: name)),
+        addMarginToTableCell(stateAgentCell()),
+        // editIconCell(),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      columnWidths: const {
+        0: FixedColumnWidth(40),
+        1: IntrinsicColumnWidth(flex: 1),
+        2: IntrinsicColumnWidth(),
+        // 3: FixedColumnWidth(40)
+      },
+      children: [
+        makeAgentRow(),
+        makeAgentRow(),
+        makeAgentRow(),
+        makeAgentRow(name: 'Iyed Tizaoui'),
+      ],
+    );
+
+    /*Expanded(
       child: SizedBox(
         width: double.infinity,
         height: double.maxFinite,
@@ -209,38 +297,6 @@ class ListOfAgent extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class AgentData extends StatelessWidget {
-  const AgentData({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.all(4.0),
-      margin: const EdgeInsets.all(2.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Colors.white,
-        border: Border.all(width: 1, color: Colors.black26),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          // Profile Picture
-          Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.indigo.shade800,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ],
-      ),
-    );
+    );*/
   }
 }
