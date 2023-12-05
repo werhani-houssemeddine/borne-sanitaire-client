@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:borne_sanitaire_client/Service/request.dart';
 import 'package:borne_sanitaire_client/utils/hive.dart';
-import 'package:borne_sanitaire_client/utils/user.dart';
+import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:http/http.dart' as http;
 
 class ExtractRequestData {

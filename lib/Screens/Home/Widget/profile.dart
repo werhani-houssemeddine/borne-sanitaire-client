@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Controller/logout.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
-import 'package:borne_sanitaire_client/utils/user.dart';
+import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:flutter/material.dart';
 
 Future displayProfileBottomSheet(BuildContext context) {

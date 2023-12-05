@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/profile/logout.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
-import 'package:borne_sanitaire_client/utils/user.dart';
+import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:flutter/material.dart';
 
 class User {
@@ -226,7 +227,7 @@ class ProfileScreenLinks extends StatelessWidget {
               linkTitle: "Log out",
               icon: Icons.logout,
               backgroundColor: Colors.redAccent,
-              onPressed: () => {},
+              onPressed: () => ShowLogoutDialog(context),
             ),
           ],
         ),
