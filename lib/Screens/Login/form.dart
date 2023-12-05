@@ -1,116 +1,12 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/Screens/Login/interfaces.dart';
 import 'package:borne_sanitaire_client/Screens/Login/login_service.dart';
+import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class _FormInput {
-  static bool _passwordError = false;
-  static bool _emailError = false;
-  static TextEditingController emailController =
-      TextEditingController(text: '');
-  static TextEditingController passwordController =
-      TextEditingController(text: '');
-
-  static void resetPasswordError() => _passwordError = false;
-  static void setPasswordError() => _passwordError = true;
-  static bool getPasswordError() => _passwordError;
-
-  static void resetEmailError() => _emailError = false;
-  static void setEmailError() => _emailError = true;
-  static bool getEmailError() => _emailError;
-}
-
-class LoginFormWidget extends StatefulWidget {
-  const LoginFormWidget({super.key});
-
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
-class MyCustomFormState extends State<LoginFormWidget> {
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    // _FormInput.emailController.dispose();
-    // _FormInput.passwordController.dispose();
-    super.dispose();
-  }
-
-  resetPassword(value) {
-    print('reset $value');
-    setState(() {
-      _FormInput.resetPasswordError();
-    });
-    print(_FormInput.getPasswordError());
-  }
-
-  resetEmail(value) {
-    print('reset $value');
-
-    setState(() {
-      _FormInput.resetEmailError();
-    });
-    print(_FormInput.getEmailError());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      autovalidateMode: AutovalidateMode.disabled,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          LoginFormInput(
-            controller: _FormInput.emailController,
-            validator: _InputValidators.emailValidator,
-            onChanged: resetEmail,
-            decoration: _InputDecoration.emailDecoration(
-              _FormInput.getEmailError(),
-            ),
-            autofocus: true,
-          ),
-          LoginFormInput(
-            controller: _FormInput.passwordController,
-            validator: _InputValidators.passwordValidator,
-            onChanged: resetPassword,
-            decoration: _InputDecoration.passwordDecoration(
-              _FormInput.getPasswordError(),
-            ),
-            obscureText: true,
-          ),
-          _SubmitLoginButton(
-            formKey: _formKey,
-            emailController: _FormInput.emailController,
-            passwordController: _FormInput.passwordController,
-          ),
-          Center(
-            child: RichText(
-              text: TextSpan(
-                text: "Forgot Password ?",
-                style: const TextStyle(color: Colors.blue),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    print("Hi forgot password clicked !");
-                  },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InputValidators {
+class LoginFormInputValidators {
   static String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
       return "Email is required";
@@ -139,68 +35,19 @@ class _InputValidators {
   }
 }
 
-class _SubmitLoginButton extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final TextEditingController passwordController;
-  final TextEditingController emailController;
-
-  const _SubmitLoginButton(
-      {required this.formKey,
-      required this.emailController,
-      required this.passwordController});
-
-  void _handleSubmitLogin(
-      String email, String password, BuildContext context) async {
-    LOGIN_RESPONSE response =
-        await submitLoginForm(email: email, password: password);
-
-    if (response == LOGIN_RESPONSE.SUCCESS) {
-      if (context.mounted) {
-        AutoRouter.of(context).push(const HomeRoute()).then((value) => null);
-      }
-    } else if (response == LOGIN_RESPONSE.SERVER_ERROR) {
-      if (context.mounted) {
-        AutoRouter.of(context).push(const WelcomeRoute()).then((value) => null);
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(10),
-      height: 50,
-      child: ElevatedButton(
-        child: const Text("Login"),
-        onPressed: () => {
-          if (formKey.currentState!.validate())
-            {
-              _handleSubmitLogin(
-                emailController.value.text,
-                passwordController.value.text,
-                context,
-              )
-            }
-        },
-      ),
-    );
-  }
-}
-
-class _InputDecoration {
-  static InputDecoration makeInputDecoration(
-      {Icon? inputIcon, String hint = "Enter data", bool error = false}) {
+class LoginFormInputDecoration {
+  static InputDecoration makeInputDecoration({
+    Icon? inputIcon,
+    String hint = "Enter data",
+    bool error = false,
+  }) {
     Widget? checkIcon() {
-      if (inputIcon != null) {
-        return Align(
-          widthFactor: 1.0,
-          heightFactor: 1.0,
-          child: inputIcon,
-        );
-      } else {
-        return null;
-      }
+      if (inputIcon == null) return null;
+      return Align(
+        widthFactor: 1.0,
+        heightFactor: 1.0,
+        child: inputIcon,
+      );
     }
 
     return InputDecoration(
@@ -237,51 +84,127 @@ class _InputDecoration {
   }
 }
 
-class _CustomInput extends StatelessWidget {
-  final Widget input;
-  const _CustomInput({required this.input});
+class LoginFormWidget extends StatefulWidget {
+  const LoginFormWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    if (input is TextFormField || input is ElevatedButton) {
-      return Container(
-        margin: const EdgeInsets.all(10.0),
-        child: input,
-      );
-    } else {
-      return Container();
-    }
-  }
+  _FormState createState() => _FormState();
 }
 
-class LoginFormInput extends StatelessWidget {
-  final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final void Function(String)? onChanged;
-  final bool autofocus;
-  final bool obscureText;
-  final InputDecoration? decoration;
-  const LoginFormInput({
-    Key? key,
-    required this.validator,
-    required this.onChanged,
-    required this.controller,
-    required this.decoration,
-    this.autofocus = false,
-    this.obscureText = false,
-  }) : super(key: key);
+class _FormState extends State<LoginFormWidget> {
+  final _formKey = GlobalKey<FormState>();
+
+  bool error = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      child: TextFormField(
-        controller: controller,
-        validator: validator,
-        autofocus: autofocus,
-        obscureText: obscureText,
-        onChanged: (String? value) {},
-        decoration: decoration,
+    void submitForm({
+      required String email,
+      required String password,
+      required BuildContext context,
+    }) async {
+      LOGIN_RESPONSE response =
+          await submitLoginForm(email: email, password: password);
+
+      if (response == LOGIN_RESPONSE.SUCCESS) {
+        if (context.mounted) {
+          AutoRouter.of(context).push(const HomeRoute()).then((value) => null);
+        }
+      } else if (response == LOGIN_RESPONSE.SERVER_ERROR) {
+        if (context.mounted) {
+          AutoRouter.of(context)
+              .push(const WelcomeRoute())
+              .then((value) => null);
+        }
+      }
+    }
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            child: TextFormField(
+              autofocus: true,
+              controller: _emailController,
+              validator: LoginFormInputValidators.emailValidator,
+              decoration: LoginFormInputDecoration.emailDecoration(error),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(10.0),
+            child: TextFormField(
+              obscureText: true,
+              controller: _passwordController,
+              validator: LoginFormInputValidators.passwordValidator,
+              decoration: LoginFormInputDecoration.passwordDecoration(error),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: MakeGestureDetector(
+                  onPressed: () {},
+                  child: Text(
+                    "forgot password",
+                    textDirection: TextDirection.rtl,
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          MakeGestureDetector(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                submitForm(
+                  email: _emailController.value.text,
+                  password: _passwordController.value.text,
+                  context: context,
+                );
+              } else {
+                setState(() {
+                  error = true;
+                });
+              }
+            },
+            child: Container(
+              margin: const EdgeInsets.all(10.0),
+              height: 55,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.primary,
+              ),
+              child: const Center(
+                child: Text(
+                  "SIGN IN",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
