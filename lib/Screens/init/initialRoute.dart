@@ -1,9 +1,10 @@
+import 'package:borne_sanitaire_client/Screens/init/landingScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:borne_sanitaire_client/Screens/init/init.dart';
+import 'package:borne_sanitaire_client/Screens/init/init_service.dart';
 
 @RoutePage()
 class InitialScreen extends StatelessWidget {
@@ -25,11 +26,13 @@ class InitialScreen extends StatelessWidget {
   }
 
   void navigateToWelcomePage(BuildContext context) {
-    AutoRouter.of(context).push(const WelcomeRoute()).then((value) => {});
+    AutoRouter.of(context).replace(const WelcomeRoute()).then((value) => {});
   }
 
   void navigateToHomePage(BuildContext context) {
-    AutoRouter.of(context).push(const HomeRoute()).then((value) => {});
+    AutoRouter.of(context).replace(const HomeRoute(), onFailure: (failure) {
+      print('Faillure to replace init route by home route $failure');
+    }).then((value) => {});
   }
 
   Widget waitingWidget() {
@@ -55,9 +58,9 @@ class InitialScreen extends StatelessWidget {
             ? navigateToHomePage(context)
             : navigateToWelcomePage(context);
       }
-      return waitingWidget();
+      return const LandingScreen();
     } else {
-      return waitingWidget();
+      return const LandingScreen();
     }
   }
 }
