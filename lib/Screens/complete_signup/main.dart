@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
-import 'package:borne_sanitaire_client/Service/request.dart';
+import 'package:borne_sanitaire_client/Screens/complete_signup/show_modal.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
@@ -18,150 +18,172 @@ class CompleteUserSignUp extends StatefulWidget {
 }
 
 class _CompleteUserSignUpState extends State<CompleteUserSignUp> {
-  final TextEditingController _phoneNumberController = TextEditingController();
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      CompleteUserDataShowModal(context, controller: _phoneNumberController);
+      CompleteUserDataShowModal(
+        context,
+        child: const CompleteUserSignUpWidget(),
+      );
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    return Container(color: Colors.white);
+  }
+}
+
+class CompleteUserSignUpWidget extends StatefulWidget {
+  const CompleteUserSignUpWidget({Key? key}) : super(key: key);
+
+  @override
+  _CompleteUserSignUpWidgetState createState() =>
+      _CompleteUserSignUpWidgetState();
+}
+
+class _CompleteUserSignUpWidgetState extends State<CompleteUserSignUpWidget> {
+  bool isDeviceConfigurationSetted = false;
+  bool isProfilePhotoSetted = false;
+  bool isPhoneNumberSetted = false;
+
+  bool get isDone =>
+      isPhoneNumberSetted ||
+      isDeviceConfigurationSetted ||
+      isProfilePhotoSetted;
+
+  @override
+  void initState() => super.initState();
+
+  void setUpdatedPhoto(bool state) =>
+      setState(() => isProfilePhotoSetted = state);
+
+  void setUpdatePhoneNumber(bool state) =>
+      setState(() => isPhoneNumberSetted = state);
+
+  void setUpdateDeviceConfiguration(bool state) =>
+      setState(() => isDeviceConfigurationSetted = state);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      padding: const EdgeInsets.all(8.0),
+      height: MediaQuery.of(context).size.height * 0.95,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CompleteUserSignUpAppBar(isDone: isDone),
+              UpdateUserProfilePhoto(setUploadPhoto: setUpdatedPhoto),
+            ],
+          ),
+          Expanded(
+            child: CompleteUserSignUpConfigDevicee(
+              updatePhoneNumberWidget: UpdatePhoneNumber(),
+            ),
+          ),
+          const ContinueButton(),
+        ],
+      ),
     );
   }
 }
 
-// ignore: non_constant_identifier_names
-CompleteUserDataShowModal(
-  BuildContext context, {
-  required TextEditingController controller,
-}) {
-  return showModalBottomSheet(
-    context: context,
-    backgroundColor: const Color.fromARGB(255, 241, 251, 255),
-    barrierColor: Colors.black87.withOpacity(0.5),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(15),
-      ),
-    ),
-    isScrollControlled: true,
-    isDismissible: false,
-    builder: (context) {
-      return Container(
-        padding: const EdgeInsets.all(8.0),
-        height: MediaQuery.of(context).size.height * 0.95,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CompleteUserSignUpAppBar(),
-                const UpdateUserProfilePhoto(),
-                UpdatePhoneNumber(phoneNumberController: controller),
-                const SizedBox(height: 20),
-                const Divider(),
-              ],
-            ),
-            const Expanded(
-              child: CompleteUserSignUpConfigDevicee(),
-            ),
-            ElevatedButton(
-              onPressed: () => AutoRouter.of(context).replace(
-                const HomeRoute(),
-              ),
-              child: const Text("Continue"),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
 class CompleteUserSignUpAppBar extends StatelessWidget {
-  const CompleteUserSignUpAppBar({Key? key}) : super(key: key);
+  final bool isDone;
+
+  const CompleteUserSignUpAppBar({
+    Key? key,
+    required this.isDone,
+  }) : super(key: key);
+
+  MakeGestureDetector makeAppBarLinks({
+    required onPressed,
+    required link,
+    required color,
+  }) {
+    return MakeGestureDetector(
+      onPressed: onPressed,
+      child: Text(
+        link,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w700,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            MakeGestureDetector(
-              onPressed: () =>
-                  AutoRouter.of(context).replace(const HomeRoute()),
-              child: const Text(
-                "Skip",
-                style: TextStyle(
-                  color: Colors.black45,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        const Center(
-          child: Text(
-            "Sign Up",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: 32,
-            ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          makeAppBarLinks(
+            onPressed: () => AutoRouter.of(context).replace(const HomeRoute()),
+            link: "Skip",
+            color: Colors.black45,
           ),
-        ),
-        const SizedBox(height: 16),
-        const Divider(),
-        /*const Text(
-          "We encourage you to complete the rest of this form "
-          "for more better experience 😊",
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black54,
+          makeAppBarLinks(
+            onPressed: () {},
+            link: "done",
+            color: isDone ? Colors.redAccent.shade400 : Colors.black45,
           ),
-        ),*/
-      ],
+        ],
+      ),
     );
   }
 }
 
 class UpdateUserProfilePhoto extends StatefulWidget {
-  const UpdateUserProfilePhoto({Key? key}) : super(key: key);
+  final void Function(bool) setUploadPhoto;
+  const UpdateUserProfilePhoto({
+    Key? key,
+    required this.setUploadPhoto,
+  }) : super(key: key);
 
   @override
   State<UpdateUserProfilePhoto> createState() => _UpdateUserProfilePhotoState();
 }
 
 class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
+  bool anyImageSetted = false;
+
   XFile? image;
   final ImagePicker picker = ImagePicker();
 
   Future getImage(ImageSource media) async {
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      await upload(File(img.path));
+      // await upload(File(img.path));
       setState(() {
         image = img;
+        anyImageSetted = true;
       });
+      widget.setUploadPhoto(true);
+    } else {
+      if (anyImageSetted == false) {
+        widget.setUploadPhoto(false);
+      }
     }
   }
 
-  Image showImage() {
+  Widget showImage() {
     if (image == null) {
-      return const Image(image: AssetImage('assets/default_user1.png'));
+      // return const Image(image: AssetImage('assets/default_user1.png'));
+      return const Center(
+        child: Icon(
+          Icons.person,
+          size: 75,
+        ),
+      );
     } else {
       return Image.file(
         File(image!.path),
@@ -176,7 +198,7 @@ class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       height: 150,
       width: double.infinity,
       child: Center(
@@ -190,7 +212,7 @@ class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(75),
-                    color: Colors.blue.shade200,
+                    border: Border.all(width: 3, color: Colors.blue),
                   ),
                 ),
                 ClipOval(
@@ -204,8 +226,8 @@ class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
               ],
             ),
             Positioned(
-              bottom: 0,
-              right: 0,
+              bottom: 1.5,
+              right: 1.5,
               child: Container(
                 width: 30,
                 height: 30,
@@ -238,11 +260,9 @@ class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
 }
 
 class UpdatePhoneNumber extends StatelessWidget {
-  final TextEditingController phoneNumberController;
-  const UpdatePhoneNumber({
-    Key? key,
-    required this.phoneNumberController,
-  }) : super(key: key);
+  final TextEditingController phoneNumberController = TextEditingController();
+
+  UpdatePhoneNumber({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +303,13 @@ class UpdatePhoneNumber extends StatelessWidget {
 }
 
 class CompleteUserSignUpConfigDevicee extends StatelessWidget {
-  const CompleteUserSignUpConfigDevicee({Key? key}) : super(key: key);
+  final StatelessWidget updatePhoneNumberWidget;
+
+  const CompleteUserSignUpConfigDevicee({
+    Key? key,
+    required this.updatePhoneNumberWidget,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final double currentWidth = MediaQuery.of(context).size.width;
@@ -319,6 +345,7 @@ class CompleteUserSignUpConfigDevicee extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    updatePhoneNumberWidget,
                     TextFormField(
                       // controller: phoneNumberController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -378,6 +405,38 @@ class CompleteUserSignUpConfigDevicee extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ContinueButton extends StatelessWidget {
+  const ContinueButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MakeGestureDetector(
+      onPressed: () {},
+      child: Container(
+        width: double.infinity,
+        height: 55,
+        margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Center(
+          child: Text(
+            "Continue",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
