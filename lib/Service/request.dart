@@ -79,6 +79,23 @@ class SecureRequest {
 
     return await Request.get(endpoint: endpoint, headers: headers);
   }
+
+  static Future<http.Response> put({
+    required String endpoint,
+    Map<String, String>? payload,
+    Map<String, String>? headers,
+    Map<String, String>? queries,
+  }) async {
+    if (CurrentUser.instance?.token == null) throw Exception();
+
+    headers = {...?headers, "Authorization": CurrentUser.instance!.token};
+
+    return await http.put(
+      _makeURI(endpoint: endpoint),
+      headers: headers,
+      body: payload,
+    );
+  }
 }
 
 upload(File imageFile) async {
