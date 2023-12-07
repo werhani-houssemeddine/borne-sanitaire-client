@@ -13,7 +13,6 @@ class HomePageAndroidLayout extends StatefulWidget {
 }
 
 class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
-  int _selectedIndex = 0;
   bool showNotifications = false;
   Widget? currentPage;
 
@@ -138,23 +137,6 @@ class HomePageContent extends StatelessWidget {
     );
   }
 }
-
-/*
-class _HomePageAndroidLayoutState extends State<HomePageAndroidLayout> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Scaffold(
-        bottomNavigationBar: const BottomAppBar(),
-        body: Container(
-          child: const SearchScreen(),
-        ),
-      ),
-    );
-  }
-}
-*/
 
 class HomeBottomNavigationBar extends StatefulWidget {
   const HomeBottomNavigationBar({Key? key}) : super(key: key);
