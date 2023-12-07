@@ -1,4 +1,4 @@
-import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent_or_device.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
@@ -152,11 +152,11 @@ class _HomeBottomNavigationBarState extends State<HomeBottomNavigationBar> {
   void Function(int) _onItemTapped(BuildContext context) {
     return (int index) {
       if (index == 2) {
-        AddAgentBuilder(context);
+        AddAgentOrDeviceBuilder(context);
         return;
       }
       if (index != _selectedIndex) {
-        setState(() => _selectedIndex = index);
+        if (index != 4) setState(() => _selectedIndex = index);
 
         const Map<int, PageRouteInfo<void>> listOfWidget = {
           0: DashboardRoute(),
@@ -165,9 +165,9 @@ class _HomeBottomNavigationBarState extends State<HomeBottomNavigationBar> {
           4: ProfileRoute(),
         };
 
-        if (listOfWidget[_selectedIndex] != null) {
+        if (listOfWidget[index] != null) {
           AutoRouter.of(context).push(
-            listOfWidget[_selectedIndex] ?? const DashboardRoute(),
+            listOfWidget[index] ?? const DashboardRoute(),
           );
         }
       }
