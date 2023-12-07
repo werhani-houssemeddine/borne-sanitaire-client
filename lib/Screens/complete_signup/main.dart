@@ -3,13 +3,16 @@ import 'package:borne_sanitaire_client/Screens/complete_signup/controller/handle
 import 'package:borne_sanitaire_client/Screens/complete_signup/show_modal.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/widget/device_visitors.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/widget/phone_number.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
 class CompleteUserSignUpScreen extends StatefulWidget {
-  const CompleteUserSignUpScreen({Key? key}) : super(key: key);
+  final String? deviceId;
+  const CompleteUserSignUpScreen({Key? key, required this.deviceId})
+      : super(key: key);
 
   @override
   State<CompleteUserSignUpScreen> createState() => _CompleteUserSignUpState();
@@ -18,12 +21,22 @@ class CompleteUserSignUpScreen extends StatefulWidget {
 class _CompleteUserSignUpState extends State<CompleteUserSignUpScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      CompleteUserDataShowModal(
-        context,
-        child: const CompleteUserSignUpWidget(),
-      );
-    });
+    if (widget.deviceId == null) {
+      AutoRouter.of(context).popUntil((route) => false);
+      AutoRouter.of(context).push(const WelcomeRoute());
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        CompleteUserDataShowModal(
+          context,
+          child: CompleteUserSignUpWidget(
+            // I am not to sure of using as String is the right solution
+            // widget.deviceId is absolutly not null because we check it
+            // to get this block, and i have to pass a string value not string?
+            deviceId: widget.deviceId as String,
+          ),
+        );
+      });
+    }
     super.initState();
   }
 
@@ -82,30 +95,7 @@ class CompleteUserSignUpConfigDevicee extends StatelessWidget {
                   children: [
                     updatePhoneNumberWidget,
                     deviceMaxVisitorsWidget,
-
                     const SizedBox(height: 16.0),
-                    // MakeGestureDetector(
-                    //   onPressed: () => AddAgentBuilder(context),
-                    //   child: Container(
-                    //     width: double.maxFinite,
-                    //     margin: const EdgeInsets.symmetric(horizontal: 50),
-                    //     height: 45,
-                    //     decoration: BoxDecoration(
-                    //       color: AppColors.primary,
-                    //       borderRadius: BorderRadius.circular(10),
-                    //     ),
-                    //     child: const Center(
-                    //       child: Text(
-                    //         "Add New Agent",
-                    //         style: TextStyle(
-                    //           color: Colors.white,
-                    //           fontSize: 16,
-                    //           fontWeight: FontWeight.w600,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                     const SizedBox(height: 20),
                   ],
                 )

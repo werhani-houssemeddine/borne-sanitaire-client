@@ -13,6 +13,7 @@ Future<COMPLETE_SIGN_UP_RESPONSE> handleSubmit({
   File? image,
   String? phone,
   String? maxVisitors,
+  String? deviceId,
 }) async {
   try {
     if (phone != null) {
@@ -50,9 +51,10 @@ Future<COMPLETE_SIGN_UP_RESPONSE> handleSubmit({
         return COMPLETE_SIGN_UP_RESPONSE.USED_PHONE_NUMBER;
       }
     }
-    if (maxVisitors != null) {
+    if (deviceId != null && maxVisitors != null) {
+      print("Device $deviceId");
       http.Response setMaxVisitorNumber =
-          await setMaxVisitors(maxVisitors, "deviceId");
+          await setMaxVisitors(maxVisitors, deviceId);
 
       int statusCode = setMaxVisitorNumber.statusCode;
       if (statusCode >= 300 || statusCode <= 199) {

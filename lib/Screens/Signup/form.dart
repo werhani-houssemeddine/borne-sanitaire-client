@@ -271,9 +271,10 @@ class SubmitButton extends StatelessWidget {
 
   void handleSignUpResult(SIGN_UP_RESULT result, BuildContext context) {
     if (result == SIGN_UP_RESULT.SUCCESS) {
+      print(deviceId);
       //! Redirect to home page
       AutoRouter.of(context)
-          .push(const CompleteUserSignUpRoute())
+          .push(CompleteUserSignUpRoute(deviceId: deviceId))
           .then((value) => {});
     } else /*(result == SIGN_UP_RESULT.BAD_REQUEST_EMAIL_USED)*/ {
       UserController.emailController!.clear();

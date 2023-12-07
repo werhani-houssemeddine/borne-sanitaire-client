@@ -13,7 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CompleteUserSignUpWidget extends StatefulWidget {
-  const CompleteUserSignUpWidget({Key? key}) : super(key: key);
+  final String deviceId;
+  const CompleteUserSignUpWidget({
+    Key? key,
+    required this.deviceId,
+  }) : super(key: key);
 
   @override
   _CompleteUserSignUpWidgetState createState() =>
@@ -58,6 +62,7 @@ class _CompleteUserSignUpWidgetState extends State<CompleteUserSignUpWidget> {
   void handleSubmitForm() async {
     COMPLETE_SIGN_UP_RESPONSE updateResponse = await handleSubmit(
       maxVisitors: visitorNumber,
+      deviceId: widget.deviceId,
       phone: phoneNumberValue,
       image: profilePicture != null ? File(profilePicture!.path) : null,
     );
@@ -83,6 +88,7 @@ class _CompleteUserSignUpWidgetState extends State<CompleteUserSignUpWidget> {
 
   get deviceMaxVisitorsWidget => DeviceMaxVisitorsWidget(
         setDeviceMaxVisitors: setUpdateDeviceConfiguration,
+        deviceId: widget.deviceId,
       );
 
   get appBar => CompleteUserSignUpAppBar(

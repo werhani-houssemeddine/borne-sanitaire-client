@@ -2,8 +2,10 @@ import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 class DeviceMaxVisitorsWidget extends StatelessWidget {
+  final String deviceId;
   const DeviceMaxVisitorsWidget({
     super.key,
+    required this.deviceId,
     required this.setDeviceMaxVisitors,
   });
 
