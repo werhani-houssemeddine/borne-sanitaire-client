@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/profile/update_fields.dart';
+import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:flutter/material.dart';
 
@@ -231,13 +232,14 @@ class EditProfileUserInfo extends StatelessWidget {
     return [
       singleRow(
         "Name",
-        "Werhani Houssemeddine",
+        CurrentUser.instance!.username,
         onPressed: navigateToEditNameScreen(context),
       ),
-      singleRow("Email address", "houssemwuerhani@gmail.com"),
+      singleRow("Email address", CurrentUser.instance!.email),
       singleRow(
         "Phone Number",
-        "+216 56 561 363",
+        (CurrentUser.instance?.phoneNumber ?? "Add a new phone number")
+            .toString(),
         onPressed: navigateToEditPhoneNumberScreen(context),
       ),
       singleRow(
