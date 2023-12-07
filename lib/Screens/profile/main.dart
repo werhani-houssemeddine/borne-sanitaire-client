@@ -4,11 +4,6 @@ import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:flutter/material.dart';
 
-class User {
-  static String email = CurrentUser.instance!.email;
-  static String username = CurrentUser.instance!.username;
-}
-
 @RoutePage()
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -122,7 +117,7 @@ class ProfileScreenUserInfo extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          User.username,
+          CurrentUser.instance!.username,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14,
@@ -131,7 +126,7 @@ class ProfileScreenUserInfo extends StatelessWidget {
           ),
         ),
         Text(
-          User.email,
+          CurrentUser.instance!.email,
           style: const TextStyle(
             fontSize: 10,
             color: Colors.black,
@@ -141,32 +136,6 @@ class ProfileScreenUserInfo extends StatelessWidget {
       ],
     );
   }
-
-  /*Widget editProfileWidget(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => nvaigateToEditProfile(context),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(7),
-          ),
-          child: const Text(
-            "Edit Profile",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              decoration: TextDecoration.none,
-              letterSpacing: 1.3,
-            ),
-          ),
-        ),
-      ),
-    );
-  }*/
 
   void nvaigateToEditProfile(BuildContext context) {
     AutoRouter.of(context).push(const EditProfile()).then((value) => null);
@@ -182,7 +151,6 @@ class ProfileScreenUserInfo extends StatelessWidget {
         children: [
           profilePhoto(),
           showEmailAndFullName(),
-          //editProfileWidget(context),
         ],
       ),
     );
