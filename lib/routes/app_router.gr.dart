@@ -23,6 +23,7 @@ import 'package:borne_sanitaire_client/Screens/profile/edit_profile.dart'
 import 'package:borne_sanitaire_client/Screens/profile/main.dart' as _i9;
 import 'package:borne_sanitaire_client/Screens/Signup/main.dart' as _i10;
 import 'package:borne_sanitaire_client/Screens/welcome.dart' as _i11;
+import 'package:flutter/material.dart' as _i13;
 
 abstract class $AppRouter extends _i12.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -36,9 +37,13 @@ abstract class $AppRouter extends _i12.RootStackRouter {
       );
     },
     CompleteUserSignUpRoute.name: (routeData) {
+      final args = routeData.argsAs<CompleteUserSignUpRouteArgs>();
       return _i12.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i2.CompleteUserSignUpScreen(),
+        child: _i2.CompleteUserSignUpScreen(
+          key: args.key,
+          deviceId: args.deviceId,
+        ),
       );
     },
     DashboardRoute.name: (routeData) {
@@ -114,16 +119,41 @@ class AgentsRoute extends _i12.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.CompleteUserSignUpScreen]
-class CompleteUserSignUpRoute extends _i12.PageRouteInfo<void> {
-  const CompleteUserSignUpRoute({List<_i12.PageRouteInfo>? children})
-      : super(
+class CompleteUserSignUpRoute
+    extends _i12.PageRouteInfo<CompleteUserSignUpRouteArgs> {
+  CompleteUserSignUpRoute({
+    _i13.Key? key,
+    required String? deviceId,
+    List<_i12.PageRouteInfo>? children,
+  }) : super(
           CompleteUserSignUpRoute.name,
+          args: CompleteUserSignUpRouteArgs(
+            key: key,
+            deviceId: deviceId,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'CompleteUserSignUpRoute';
 
-  static const _i12.PageInfo<void> page = _i12.PageInfo<void>(name);
+  static const _i12.PageInfo<CompleteUserSignUpRouteArgs> page =
+      _i12.PageInfo<CompleteUserSignUpRouteArgs>(name);
+}
+
+class CompleteUserSignUpRouteArgs {
+  const CompleteUserSignUpRouteArgs({
+    this.key,
+    required this.deviceId,
+  });
+
+  final _i13.Key? key;
+
+  final String? deviceId;
+
+  @override
+  String toString() {
+    return 'CompleteUserSignUpRouteArgs{key: $key, deviceId: $deviceId}';
+  }
 }
 
 /// generated route for
