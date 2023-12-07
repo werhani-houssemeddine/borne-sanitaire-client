@@ -28,12 +28,12 @@ class HomeScreen extends StatelessWidget {
           AutoRouter.of(context).push(const WelcomeRoute()).then((value) => {});
         } else if (snapshot.hasData) {
           if (Platform.isAndroid) {
-            return HomePageAndroidLayout(
-              widgetContent: const AutoRouter(),
+            return const HomePageAndroidLayout(
+              widgetContent: AutoRouter(),
             );
           } else {
-            return HomePageAndroidLayout(
-              widgetContent: const AutoRouter(),
+            return const HomePageAndroidLayout(
+              widgetContent: AutoRouter(),
             );
           }
         }
