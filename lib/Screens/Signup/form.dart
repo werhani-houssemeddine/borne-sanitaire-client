@@ -271,7 +271,6 @@ class SubmitButton extends StatelessWidget {
 
   void handleSignUpResult(SIGN_UP_RESULT result, BuildContext context) {
     if (result == SIGN_UP_RESULT.SUCCESS) {
-      print(deviceId);
       //! Redirect to home page
       AutoRouter.of(context)
           .push(CompleteUserSignUpRoute(deviceId: deviceId))
