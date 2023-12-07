@@ -25,7 +25,7 @@ class CompleteUserSignUpAppBar extends StatelessWidget {
         style: TextStyle(
           color: color,
           fontWeight: FontWeight.w700,
-          fontSize: 12,
+          fontSize: 16,
         ),
       ),
     );
