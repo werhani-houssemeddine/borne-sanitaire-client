@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/controller/handle_request.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/show_modal.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/widget/device_visitors.dart';
@@ -9,14 +8,14 @@ import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
-class CompleteUserSignUp extends StatefulWidget {
-  const CompleteUserSignUp({Key? key}) : super(key: key);
+class CompleteUserSignUpScreen extends StatefulWidget {
+  const CompleteUserSignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<CompleteUserSignUp> createState() => _CompleteUserSignUpState();
+  State<CompleteUserSignUpScreen> createState() => _CompleteUserSignUpState();
 }
 
-class _CompleteUserSignUpState extends State<CompleteUserSignUp> {
+class _CompleteUserSignUpState extends State<CompleteUserSignUpScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

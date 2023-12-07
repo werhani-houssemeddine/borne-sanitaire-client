@@ -35,10 +35,10 @@ abstract class $AppRouter extends _i12.RootStackRouter {
         child: const _i1.AgentsScreen(),
       );
     },
-    CompleteUserSignUp.name: (routeData) {
+    CompleteUserSignUpRoute.name: (routeData) {
       return _i12.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i2.CompleteUserSignUp(),
+        child: const _i2.CompleteUserSignUpScreen(),
       );
     },
     DashboardRoute.name: (routeData) {
@@ -113,15 +113,15 @@ class AgentsRoute extends _i12.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i2.CompleteUserSignUp]
-class CompleteUserSignUp extends _i12.PageRouteInfo<void> {
-  const CompleteUserSignUp({List<_i12.PageRouteInfo>? children})
+/// [_i2.CompleteUserSignUpScreen]
+class CompleteUserSignUpRoute extends _i12.PageRouteInfo<void> {
+  const CompleteUserSignUpRoute({List<_i12.PageRouteInfo>? children})
       : super(
-          CompleteUserSignUp.name,
+          CompleteUserSignUpRoute.name,
           initialChildren: children,
         );
 
-  static const String name = 'CompleteUserSignUp';
+  static const String name = 'CompleteUserSignUpRoute';
 
   static const _i12.PageInfo<void> page = _i12.PageInfo<void>(name);
 }
