@@ -43,6 +43,7 @@ class User {
         username: user?['username'],
         id: user?['id'],
         role: user?['role'],
+        phoneNumber: user?['phone_number'],
         token: token,
       );
 

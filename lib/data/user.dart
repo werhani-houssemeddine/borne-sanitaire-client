@@ -7,6 +7,7 @@ class CurrentUser {
   final String email;
   final String role;
   final String token;
+  final int? phoneNumber;
 
   CurrentUser._({
     required this.email,
@@ -14,6 +15,7 @@ class CurrentUser {
     required this.id,
     required this.role,
     required this.token,
+    required this.phoneNumber,
   });
 
   factory CurrentUser.createInstance({
@@ -22,6 +24,7 @@ class CurrentUser {
     required int id,
     required String role,
     required String token,
+    int? phoneNumber,
   }) {
     if (!haveInstance) {
       instance = CurrentUser._(
@@ -30,9 +33,15 @@ class CurrentUser {
         id: id,
         role: role,
         token: token,
+        phoneNumber: phoneNumber,
       );
       haveInstance = true;
     }
     return instance!;
+  }
+
+  static void releaseInstance() {
+    haveInstance = false;
+    instance = null;
   }
 }
