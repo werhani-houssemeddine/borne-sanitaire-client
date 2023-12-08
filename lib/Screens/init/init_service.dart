@@ -76,6 +76,7 @@ class AuthManager {
       id: data['id'],
       role: user['role'],
       phoneNumber: user['phone_number'],
+      profilePicture: user['profile_picture'],
       token: token,
     );
     return INITIALIZATION_RESPONSE.HOME;

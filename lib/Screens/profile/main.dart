@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/profile/logout.dart';
+import 'package:borne_sanitaire_client/config.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:flutter/material.dart';
@@ -83,9 +84,23 @@ class ProfileScreenAppBar extends StatelessWidget {
 }
 
 class ProfileScreenUserInfo extends StatelessWidget {
-  const ProfileScreenUserInfo({Key? key}) : super(key: key);
+  Image showImage(String URL_IMAGE) {
+    return Image.network(
+      URL_IMAGE,
+      fit: BoxFit.cover,
+      scale: 0.5,
+      height: 90,
+      width: 90,
+    );
+  }
 
+  const ProfileScreenUserInfo({Key? key}) : super(key: key);
   Widget profilePhoto() {
+    var picutureURL = CurrentUser.instance?.profilePicture;
+    var fullPictureURL = picutureURL != null
+        ? "http://$BASE_URL/api/client/update$picutureURL"
+        : "";
+
     return Center(
       child: Container(
         width: 120,
@@ -98,14 +113,13 @@ class ProfileScreenUserInfo extends StatelessWidget {
             width: 2,
           ),
         ),
-        child: Container(
-          // width: (120 - 5) / 2,
-          // height: (120 - 5) / 2,
-          decoration: BoxDecoration(
-            // 120 => Parent Width Size
-            // 4   => 2 Padding, 2 Border
-            borderRadius: BorderRadius.circular((120 - 4) / 2),
-            color: Colors.white,
+        child: ClipOval(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular((120 - 4) / 2),
+              color: Colors.white,
+            ),
+            child: picutureURL != null ? showImage(fullPictureURL) : null,
           ),
         ),
       ),
@@ -113,27 +127,30 @@ class ProfileScreenUserInfo extends StatelessWidget {
   }
 
   Widget showEmailAndFullName() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          CurrentUser.instance!.username,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: Colors.black,
-            decoration: TextDecoration.none,
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            CurrentUser.instance!.username,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: Colors.black,
+              decoration: TextDecoration.none,
+            ),
           ),
-        ),
-        Text(
-          CurrentUser.instance!.email,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.black,
-            decoration: TextDecoration.none,
+          Text(
+            CurrentUser.instance!.email,
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.black,
+              decoration: TextDecoration.none,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

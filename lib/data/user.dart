@@ -8,6 +8,7 @@ class CurrentUser {
   final String role;
   final String token;
   final int? phoneNumber;
+  final String? profilePicture;
 
   CurrentUser._({
     required this.email,
@@ -16,6 +17,7 @@ class CurrentUser {
     required this.role,
     required this.token,
     required this.phoneNumber,
+    required this.profilePicture,
   });
 
   factory CurrentUser.createInstance({
@@ -25,6 +27,7 @@ class CurrentUser {
     required String role,
     required String token,
     int? phoneNumber,
+    String? profilePicture,
   }) {
     if (!haveInstance) {
       instance = CurrentUser._(
@@ -34,6 +37,7 @@ class CurrentUser {
         role: role,
         token: token,
         phoneNumber: phoneNumber,
+        profilePicture: profilePicture,
       );
       haveInstance = true;
     }

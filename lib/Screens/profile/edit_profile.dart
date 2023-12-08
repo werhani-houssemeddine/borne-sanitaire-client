@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/profile/update_fields.dart';
+import 'package:borne_sanitaire_client/config.dart';
 import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:flutter/material.dart';
@@ -103,20 +104,38 @@ class EditProfileAppBar extends StatelessWidget {
 class EditProfileChangePhoto extends StatelessWidget {
   const EditProfileChangePhoto({Key? key}) : super(key: key);
 
+  Image showImage(String URL_IMAGE) {
+    return Image.network(
+      URL_IMAGE,
+      fit: BoxFit.cover,
+      scale: 0.5,
+      height: 90,
+      width: 90,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var picutureURL = CurrentUser.instance?.profilePicture;
+    var fullPictureURL = picutureURL != null
+        ? "http://$BASE_URL/api/client/update$picutureURL"
+        : "";
+
     return Container(
       height: 200,
       width: double.infinity,
       child: Center(
         child: Stack(
           children: [
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(75),
-                color: Colors.green,
+            ClipOval(
+              child: Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(75),
+                  color: Colors.green,
+                ),
+                child: picutureURL != null ? showImage(fullPictureURL) : null,
               ),
             ),
             Positioned(

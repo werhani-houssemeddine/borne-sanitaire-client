@@ -44,6 +44,7 @@ class User {
         id: user?['id'],
         role: user?['role'],
         phoneNumber: user?['phone_number'],
+        profilePicture: user?['profile_picture'],
         token: token,
       );
 
