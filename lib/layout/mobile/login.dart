@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:borne_sanitaire_client/Screens/Home/Widget/arrow_back.dart';
+import 'package:borne_sanitaire_client/widget/arrow_back.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
