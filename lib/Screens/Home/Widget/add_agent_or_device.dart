@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,12 @@ class AddAgentOrDevice extends StatelessWidget {
     };
   }
 
+  void Function() addNewDeviceClick(BuildContext context) {
+    return () {
+      AutoRouter.of(context).replace(const AddNewDeviceRoute());
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -48,7 +55,7 @@ class AddAgentOrDevice extends StatelessWidget {
                 height: 60,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 width: double.infinity,
                 child: const Center(
@@ -67,11 +74,11 @@ class AddAgentOrDevice extends StatelessWidget {
           ),
           if (Platform.isAndroid)
             MakeGestureDetector(
-              onPressed: () {},
+              onPressed: addNewDeviceClick(context),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 height: 60,
                 padding: const EdgeInsets.all(3.0),
