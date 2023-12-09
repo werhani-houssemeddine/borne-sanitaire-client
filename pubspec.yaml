@@ -46,6 +46,7 @@ dependencies:
   intl: ^0.18.1
   percent_indicator: ^4.2.3
   image_picker: ^1.0.4
+  flutter_svg: ^2.0.9
 
 dev_dependencies:
   flutter_test:
