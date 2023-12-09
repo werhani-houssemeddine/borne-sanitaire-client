@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/interface.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/main.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Service/agent.dart';
+import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:flutter/material.dart';
-
-// ignore: camel_case_types, constant_identifier_names
-enum CURRENT_AGNT_SCREEN { ALL, PENDING, ACTIF, ARCHEIVED }
 
 @RoutePage()
 class AgentsScreen extends StatefulWidget {
@@ -33,25 +33,17 @@ class _AgentsScreen extends State<AgentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Hello $currentScreen");
     return FutureBuilder(
-      future: Agent.getAllAgents(),
+      future: AgentService.getAllAgents(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return Container(
-          padding: const EdgeInsets.all(10),
-          height: double.infinity,
-          width: double.infinity,
-          child: Column(
-            children: [
-              const AgentSearchBar(),
-              FilterAgent(
-                setCurrentScreenPage: changeCurrentPage,
-                currentScreen: currentScreen,
-              ),
-              const ListOfAgent(),
-            ],
-          ),
-        );
+        if (snapshot.connectionState == ConnectionState.done) {
+          List<Agent> listOfAgent = snapshot.data.data;
+
+          if (listOfAgent.isNotEmpty) {
+            return AgentScreen2(agents: listOfAgent);
+          }
+        }
+        return const Center(child: CircularProgressIndicator.adaptive());
       },
     );
   }
@@ -273,30 +265,5 @@ class ListOfAgent extends StatelessWidget {
         makeAgentRow(name: 'Iyed Tizaoui'),
       ],
     );
-
-    /*Expanded(
-      child: SizedBox(
-        width: double.infinity,
-        height: double.maxFinite,
-        child: ListView(
-          children: const [
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-            AgentData(),
-          ],
-        ),
-      ),
-    );*/
   }
 }

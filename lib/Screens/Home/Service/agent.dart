@@ -2,16 +2,17 @@ import 'dart:convert';
 
 import 'package:borne_sanitaire_client/Screens/Home/interface/agent_inerface.dart';
 import 'package:borne_sanitaire_client/Service/request.dart';
+import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:http/http.dart' as http;
 
 class AgentListServerResponse {
   final GET_ALL_AGENT_INTERFACE status;
-  final dynamic data;
+  final List<Agent>? data;
 
   AgentListServerResponse({required this.status, this.data});
 }
 
-class Agent {
+class AgentService {
   static Future<ADD_AGENT_INTERFACE> addAgent(String agentEmail) async {
     try {
       Map<String, String> payload = {"email": agentEmail};
@@ -48,12 +49,18 @@ class Agent {
         String state = responseData["state"];
         if (error == false && state == "success") {
           var data = responseData["data"];
+
           if (data is List) {
             return AgentListServerResponse(
               status: GET_ALL_AGENT_INTERFACE.SUCCESS,
               data: data.isEmpty
                   ? []
-                  : data.map((e) => Map.from(e).remove('agent_id')),
+                  : data.map((e) => Agent.makeAgent(e)).toList(),
+            );
+          } else {
+            return AgentListServerResponse(
+              status: GET_ALL_AGENT_INTERFACE.SUCCESS,
+              data: [],
             );
           }
         }

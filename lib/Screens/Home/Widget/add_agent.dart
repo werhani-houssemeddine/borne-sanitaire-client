@@ -99,7 +99,7 @@ class _EmailSendingState extends State<_EmailSending> {
         });
 
         ADD_AGENT_INTERFACE response =
-            await Agent.addAgent(_emailController.text.trim());
+            await AgentService.addAgent(_emailController.text.trim());
 
         if (response == ADD_AGENT_INTERFACE.SUCCESS) {
           setState(() {
