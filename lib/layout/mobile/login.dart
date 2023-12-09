@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Widget/arrow_back.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
@@ -28,31 +28,9 @@ class LoginScreenAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       height: 55,
-      child: Row(
-        children: [
-          MakeGestureDetector(
-            child: Container(
-              height: 30,
-              width: 30,
-              padding: const EdgeInsets.only(left: 5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-              ),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
+      child: ArrowBack(),
     );
   }
 }
