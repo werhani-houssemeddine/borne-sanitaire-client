@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/profile/logout.dart';
+import 'package:borne_sanitaire_client/Screens/profile/settings/main.dart';
 import 'package:borne_sanitaire_client/config.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/data/user.dart';
+import 'package:borne_sanitaire_client/widget/show_bottom_modal.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -177,6 +179,13 @@ class ProfileScreenUserInfo extends StatelessWidget {
 class ProfileScreenLinks extends StatelessWidget {
   const ProfileScreenLinks({Key? key}) : super(key: key);
 
+  showSettingsModal(BuildContext context) {
+    ShowModalBttomSheet(
+      context,
+      child: const SettingScreen(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -189,7 +198,7 @@ class ProfileScreenLinks extends StatelessWidget {
               linkTitle: "Settings",
               icon: Icons.settings,
               backgroundColor: Colors.blue,
-              onPressed: () => {},
+              onPressed: () => showSettingsModal(context),
             ),
             const Divider(),
             MakeCustomLink(
