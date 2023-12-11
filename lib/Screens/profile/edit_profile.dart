@@ -98,7 +98,6 @@ class EditProfileAppBar extends StatelessWidget {
               if (image != null) {
                 try {
                   updateProfilePhoto(File(image!.path));
-                  CurrentUser.isImageChanged = true;
                 } catch (e) {}
               }
             },

@@ -62,7 +62,6 @@ class _EditProfileChangePhotoState extends State<EditProfileChangePhoto> {
     var fullPictureURL = picutureURL != null
         ? "http://$BASE_URL/api/client/update$picutureURL"
         : "";
-    print("TESTTTT ${CurrentUser.isImageChanged}");
 
     return Container(
       height: 200,
