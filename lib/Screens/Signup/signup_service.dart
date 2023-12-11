@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:borne_sanitaire_client/Screens/Signup/response_service.dart';
 import 'package:borne_sanitaire_client/Service/request.dart';
+import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:borne_sanitaire_client/models/auth_token.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
@@ -60,6 +61,8 @@ Future<SIGN_UP_RESULT> makeSignUpRequest({
           token: data['token'] as String,
           expiresIn: 3600,
         );
+
+        CurrentUser.saveToken = data['token'];
 
         // save the authToken instance
         await authBox.put('token', makeToken);
