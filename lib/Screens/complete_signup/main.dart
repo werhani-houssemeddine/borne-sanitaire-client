@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/controller/handle_request.dart';
-import 'package:borne_sanitaire_client/Screens/complete_signup/show_modal.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/widget/device_visitors.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/widget/phone_number.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/show_bottom_modal.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class _CompleteUserSignUpState extends State<CompleteUserSignUpScreen> {
       AutoRouter.of(context).push(const WelcomeRoute());
     } else {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        CompleteUserDataShowModal(
+        ShowModalBttomSheet(
           context,
           child: CompleteUserSignUpWidget(
             // I am not to sure of using as String is the right solution
