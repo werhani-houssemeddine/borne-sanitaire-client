@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/profile/update_fields.dart';
-import 'package:borne_sanitaire_client/config.dart';
+import 'package:borne_sanitaire_client/Screens/services/update_client.dart';
 import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'edit_profile_change_photo.dart';
 
 @RoutePage()
 class EditProfile extends StatefulWidget {
@@ -14,6 +19,14 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  XFile? _image;
+
+  setPhoto(image) {
+    setState(() {
+      _image = image;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,15 +34,14 @@ class _EditProfileState extends State<EditProfile> {
       width: double.maxFinite,
       color: const Color.fromARGB(255, 241, 251, 255),
       padding: const EdgeInsets.all(8.0),
-      child: const Column(
+      child: Column(
         children: [
-          EditProfileAppBar(),
-          Divider(),
-          EditProfileChangePhoto(),
-          Divider(),
-          EditProfileUserInfo(),
-          Divider(),
-          EditProfileDeleteAccount(),
+          EditProfileAppBar(image: _image),
+          const Divider(),
+          EditProfileChangePhoto(updatePhotoState: setPhoto),
+          const Divider(),
+          const EditProfileUserInfo(),
+          const Divider(),
         ],
       ),
     );
@@ -37,7 +49,8 @@ class _EditProfileState extends State<EditProfile> {
 }
 
 class EditProfileAppBar extends StatelessWidget {
-  const EditProfileAppBar({Key? key}) : super(key: key);
+  final XFile? image;
+  const EditProfileAppBar({Key? key, this.image}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +94,14 @@ class EditProfileAppBar extends StatelessWidget {
             ),
           ),
           MakeGestureDetector(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              if (image != null) {
+                try {
+                  updateProfilePhoto(File(image!.path));
+                  CurrentUser.isImageChanged = true;
+                } catch (e) {}
+              }
+            },
             child: SizedBox(
               child: Center(
                 child: Text(
@@ -96,76 +116,6 @@ class EditProfileAppBar extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class EditProfileChangePhoto extends StatelessWidget {
-  const EditProfileChangePhoto({Key? key}) : super(key: key);
-
-  Image showImage(String URL_IMAGE) {
-    return Image.network(
-      URL_IMAGE,
-      fit: BoxFit.cover,
-      scale: 0.5,
-      height: 90,
-      width: 90,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var picutureURL = CurrentUser.instance?.profilePicture;
-    var fullPictureURL = picutureURL != null
-        ? "http://$BASE_URL/api/client/update$picutureURL"
-        : "";
-
-    return Container(
-      height: 200,
-      width: double.infinity,
-      child: Center(
-        child: Stack(
-          children: [
-            ClipOval(
-              child: Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(75),
-                  color: Colors.green,
-                ),
-                child: picutureURL != null ? showImage(fullPictureURL) : null,
-              ),
-            ),
-            Positioned(
-              bottom: 8,
-              right: 0,
-              child: Container(
-                width: 40,
-                height: 40,
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 241, 251, 255),
-                ),
-                child: MakeGestureDetector(
-                  onPressed: () => print("Change profile photo"),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular((40 - 3) / 2),
-                      color: Colors.black,
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -281,37 +231,6 @@ class EditProfileUserInfo extends StatelessWidget {
           2: FixedColumnWidth(30),
         },
         children: tableRows(context),
-      ),
-    );
-  }
-}
-
-class EditProfileDeleteAccount extends StatelessWidget {
-  const EditProfileDeleteAccount({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MakeGestureDetector(
-      onPressed: () => print("Delete account"),
-      child: Container(
-        margin: const EdgeInsets.only(top: 50),
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        height: 55,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.red, width: 0.5),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: const Center(
-          child: Text(
-            "Delete Account",
-            style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              decoration: TextDecoration.none,
-            ),
-          ),
-        ),
       ),
     );
   }
