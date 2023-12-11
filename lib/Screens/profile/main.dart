@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/profile/logout.dart';
+import 'package:borne_sanitaire_client/Screens/profile/prefferences/main.dart';
 import 'package:borne_sanitaire_client/Screens/profile/settings/main.dart';
 import 'package:borne_sanitaire_client/config.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
@@ -186,6 +187,13 @@ class ProfileScreenLinks extends StatelessWidget {
     );
   }
 
+  showPrefferencesModal(BuildContext context) {
+    ShowModalBttomSheet(
+      context,
+      child: const PrefferencesScreen(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -214,7 +222,7 @@ class ProfileScreenLinks extends StatelessWidget {
               linkTitle: "Prefferences",
               icon: Icons.settings,
               backgroundColor: Colors.purpleAccent,
-              onPressed: () => {},
+              onPressed: () => showPrefferencesModal(context),
             ),
             const Divider(),
             MakeCustomLink(
