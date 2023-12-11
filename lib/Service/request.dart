@@ -99,7 +99,7 @@ class SecureRequest {
 }
 
 upload(File imageFile) async {
-  if (CurrentUser.instance?.token == null) throw Exception();
+  if (CurrentUser.saveToken == null) throw Exception("No token exist");
 
   var request = http.MultipartRequest(
     "POST",
@@ -114,8 +114,9 @@ upload(File imageFile) async {
 
   request.headers.putIfAbsent(
     "Authorization",
-    () => CurrentUser.instance!.token,
+    () => CurrentUser.saveToken!,
   );
+  CurrentUser.saveToken = null;
   print("boom");
   return await request.send();
 }
