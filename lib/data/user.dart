@@ -1,6 +1,7 @@
 class CurrentUser {
   static bool haveInstance = false;
   static CurrentUser? instance;
+  static String? saveToken;
 
   final int id;
   final String username;
