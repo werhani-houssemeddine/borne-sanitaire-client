@@ -60,24 +60,32 @@ class _CompleteUserSignUpWidgetState extends State<CompleteUserSignUpWidget> {
       });
 
   void handleSubmitForm() async {
-    COMPLETE_SIGN_UP_RESPONSE updateResponse = await handleSubmit(
-      maxVisitors: visitorNumber,
-      deviceId: widget.deviceId,
-      phone: phoneNumberValue,
-      image: profilePicture != null ? File(profilePicture!.path) : null,
-    );
+    print("DEVICE ID ${widget.deviceId}");
+    print("DEVICE ID $visitorNumber");
+    print("DEVICE ID $phoneNumberValue");
+    try {
+      COMPLETE_SIGN_UP_RESPONSE updateResponse = await handleSubmit(
+        maxVisitors: visitorNumber,
+        deviceId: widget.deviceId,
+        phone: phoneNumberValue,
+        image: profilePicture != null ? File(profilePicture!.path) : null,
+      );
 
-    if (updateResponse == COMPLETE_SIGN_UP_RESPONSE.SUCCESS) {
-      if (context.mounted) {
-        AutoRouter.of(context).navigate(const HomeRoute());
+      if (updateResponse == COMPLETE_SIGN_UP_RESPONSE.SUCCESS) {
+        if (context.mounted) {
+          AutoRouter.of(context).navigate(const HomeRoute());
+        }
+        return;
       }
-      return;
-    }
 
-    if (updateResponse == COMPLETE_SIGN_UP_RESPONSE.INVALID_PHONE_NUMBER) {
-      setState(() => updatePhoneTextError = "Invalid phone number");
-    } else if (updateResponse == COMPLETE_SIGN_UP_RESPONSE.USED_PHONE_NUMBER) {
-      setState(() => updatePhoneTextError = "Used phone number ");
+      if (updateResponse == COMPLETE_SIGN_UP_RESPONSE.INVALID_PHONE_NUMBER) {
+        setState(() => updatePhoneTextError = "Invalid phone number");
+      } else if (updateResponse ==
+          COMPLETE_SIGN_UP_RESPONSE.USED_PHONE_NUMBER) {
+        setState(() => updatePhoneTextError = "Used phone number ");
+      }
+    } on Exception catch (e) {
+      print(e);
     }
   }
 
