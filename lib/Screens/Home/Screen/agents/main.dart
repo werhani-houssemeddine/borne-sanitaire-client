@@ -1,3 +1,4 @@
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/agent_details.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/show_image.dart';
@@ -154,7 +155,12 @@ class AgentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MakeGestureDetector(
-      onPressed: () {},
+      onPressed: () {
+        ShowModalContainer(
+          context,
+          child: const AgentDetailsModal(),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.all(12.0),
         constraints: const BoxConstraints(
