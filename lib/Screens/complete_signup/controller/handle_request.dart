@@ -60,9 +60,6 @@ class _CompleteUserSignUpWidgetState extends State<CompleteUserSignUpWidget> {
       });
 
   void handleSubmitForm() async {
-    print("DEVICE ID ${widget.deviceId}");
-    print("DEVICE ID $visitorNumber");
-    print("DEVICE ID $phoneNumberValue");
     try {
       COMPLETE_SIGN_UP_RESPONSE updateResponse = await handleSubmit(
         maxVisitors: visitorNumber,
