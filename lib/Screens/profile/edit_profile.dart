@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Service/current_user.dart';
 import 'package:borne_sanitaire_client/Screens/profile/update_fields.dart';
 import 'package:borne_sanitaire_client/Screens/services/update_client.dart';
 import 'package:borne_sanitaire_client/data/user.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -97,7 +99,12 @@ class EditProfileAppBar extends StatelessWidget {
             onPressed: () {
               if (image != null) {
                 try {
-                  updateProfilePhoto(File(image!.path));
+                  updateProfilePhoto(File(image!.path)).then(
+                    (value) => User.getCurrentUserData(update: true).then(
+                        (value) => AutoRouter.of(context).pop().then((value) =>
+                            AutoRouter.of(context)
+                                .removeRoute(RouteData.of(context)))),
+                  );
                 } catch (e) {}
               }
             },
@@ -220,6 +227,7 @@ class EditProfileUserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(CurrentUser.instance!.profilePicture);
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: Table(
