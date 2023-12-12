@@ -1,6 +1,9 @@
+import 'package:borne_sanitaire_client/Screens/Home/Screen/device/device_details.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Service/device.dart';
 import 'package:borne_sanitaire_client/data/device.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/show_bottom_modal.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 class DeviceScreen2 extends StatelessWidget {
@@ -54,17 +57,28 @@ class DeviceWidget extends StatelessWidget {
     required this.device,
   }) : super(key: key);
 
+  showDeviceModal(BuildContext context, Device device) {
+    ShowModalBttomSheet(context, child: DeviceDetails(device: device));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MakeGestureDetector(
-      onPressed: () {},
+      onPressed: () => showDeviceModal(context, device),
       child: Container(
+        padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Colors.green,
+          border: Border.all(
+            width: 1,
+            color: AppColors.primary,
+          ),
         ),
         margin: const EdgeInsets.all(3.0),
         height: 120,
+        child: const Image(
+          image: AssetImage("assets/settings.png"),
+        ),
       ),
     );
   }
