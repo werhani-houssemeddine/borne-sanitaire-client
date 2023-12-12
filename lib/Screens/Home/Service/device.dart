@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:borne_sanitaire_client/Screens/Home/Service/real_time.dart';
 import 'package:borne_sanitaire_client/Service/request.dart';
@@ -23,7 +22,11 @@ Future<List<Device>?> getAllDevices() async {
         List<dynamic> data = body['data'];
         List<Device> listOfDevices = [];
         for (Map<String, dynamic> element in data) {
-          listOfDevices.add(Device.createDeviceInstance(element));
+          try {
+            listOfDevices.add(Device.createDeviceInstance(element));
+          } catch (e) {
+            print(e);
+          }
         }
         return listOfDevices;
       }
@@ -32,6 +35,17 @@ Future<List<Device>?> getAllDevices() async {
   } on Exception catch (e) {
     return null;
   }
+}
+
+Future getDeviceData(String deviceId) async {
+  try {
+    String endpoint = "/api/client/device/$deviceId/";
+    http.Response response = await SecureRequest.get(endpoint: endpoint);
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      Map<String, dynamic> body = jsonDecode(response.body);
+    }
+  } catch (e) {}
 }
 
 Future<SocketManager> initSocket(String deviceId) async {
