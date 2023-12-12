@@ -1,6 +1,7 @@
+import 'package:borne_sanitaire_client/Screens/profile/settings/otp_auth.dart';
+import 'package:borne_sanitaire_client/Screens/profile/settings/suspend_account.dart';
 import 'package:borne_sanitaire_client/widget/arrow_back.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
-import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -33,108 +34,12 @@ class Settigns extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ArrowBack(),
+        Divider(),
         EnableOTPAuth(),
         SizedBox(height: 16),
         SuspendAccount(),
       ],
     );
-  }
-}
-
-class EnableOTPAuth extends StatelessWidget {
-  const EnableOTPAuth({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 5,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Secure Your Account with OTP Authentication",
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              "Enhance the security of your account with One-Time "
-              "Password (OTP) Authentication we will send a unique, "
-              "time-sensitive code to your registered email address",
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 10,
-                color: Colors.black54,
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SuspendAccount extends StatelessWidget {
-  const SuspendAccount({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 5,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Suspend Your Account",
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              "Suspend Your Account functionality, you are deactivating your "
-              "account temporarily putting a pause on any activities "
-              "associated with it, Just logged in for reactivate your account",
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 10,
-                color: Colors.black54,
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
-    ;
   }
 }
 
