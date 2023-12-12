@@ -45,6 +45,29 @@ class CurrentUser {
     return instance!;
   }
 
+  factory CurrentUser.updateInstance({
+    required String email,
+    required String username,
+    required int id,
+    required String role,
+    required String token,
+    int? phoneNumber,
+    String? profilePicture,
+  }) {
+    instance = CurrentUser._(
+      email: email,
+      username: username,
+      id: id,
+      role: role,
+      token: token,
+      phoneNumber: phoneNumber,
+      profilePicture: profilePicture,
+    );
+    haveInstance = true;
+
+    return instance!;
+  }
+
   static void releaseInstance() {
     haveInstance = false;
     instance = null;
