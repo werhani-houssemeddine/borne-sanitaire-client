@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:borne_sanitaire_client/Screens/Home/Service/current_user.dart';
 import 'package:borne_sanitaire_client/config.dart';
 import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
@@ -30,6 +31,7 @@ class _EditProfileChangePhotoState extends State<EditProfileChangePhoto> {
         image = img;
         anyImageSetted = true;
       });
+      User.getCurrentUserData(update: true);
       widget.updatePhotoState(img);
     } else {
       if (anyImageSetted == false) {}
@@ -59,6 +61,7 @@ class _EditProfileChangePhotoState extends State<EditProfileChangePhoto> {
   @override
   Widget build(BuildContext context) {
     var picutureURL = CurrentUser.instance?.profilePicture;
+    print(picutureURL);
     var fullPictureURL = picutureURL != null
         ? "http://$BASE_URL/api/client/update$picutureURL"
         : "";
