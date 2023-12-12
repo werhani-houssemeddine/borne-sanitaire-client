@@ -1,6 +1,7 @@
 import 'package:borne_sanitaire_client/data/user.dart';
 import 'package:borne_sanitaire_client/widget/arrow_back.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
+import 'package:borne_sanitaire_client/widget/switch.dart';
 import 'package:flutter/material.dart';
 
 class PrefferencesScreen extends StatelessWidget {
@@ -51,15 +52,17 @@ class PrefferencesScreen extends StatelessWidget {
     return Container(
       height: size.height - 20,
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const ArrowBack(),
-          const Divider(),
-          ...listOfNotifications,
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const ArrowBack(),
+            const Divider(),
+            ...listOfNotifications,
+          ],
+        ),
       ),
     );
   }
@@ -107,11 +110,12 @@ class X extends StatelessWidget {
               textAlign: TextAlign.justify,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 10,
+                fontSize: 12,
                 color: Colors.black54,
               ),
             ),
             const SizedBox(height: 16),
+            const CustomSwitch(),
           ],
         ),
       ),
