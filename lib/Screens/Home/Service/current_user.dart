@@ -27,28 +27,44 @@ class ExtractRequestData {
 }
 
 class User {
-  static Future getCurrentUserData() async {
+  static Future getCurrentUserData({bool update = false}) async {
     try {
       String token = await getTokenFromLocalStorage();
-      print("TOKEN FROM LOCAL STORAGE $token");
+      // print("TOKEN FROM LOCAL STORAGE $token");
       http.Response response = await _makeRequest(token);
 
       var data = ExtractRequestData(bodyResponse: response.body);
       var user = data._getBodyPayload();
 
-      print(user);
+      int id = user?['id'];
+      String email = user?['email'];
+      String username = user?['username'];
+      String role = user?['role'];
+      int? phoneNumber = user?['phone_number'];
+      String? profilePicture = user?['profile_picture'];
 
-      var userInstance = CurrentUser.createInstance(
-        email: user?['email'],
-        username: user?['username'],
-        id: user?['id'],
-        role: user?['role'],
-        phoneNumber: user?['phone_number'],
-        profilePicture: user?['profile_picture'],
-        token: token,
-      );
-
-      return userInstance;
+      if (update && CurrentUser.haveInstance) {
+        print('Hello World');
+        return CurrentUser.updateInstance(
+          email: email,
+          username: username,
+          id: id,
+          role: role,
+          profilePicture: profilePicture,
+          phoneNumber: phoneNumber,
+          token: token,
+        );
+      } else {
+        return CurrentUser.createInstance(
+          email: email,
+          username: username,
+          id: id,
+          role: role,
+          profilePicture: profilePicture,
+          phoneNumber: phoneNumber,
+          token: token,
+        );
+      }
     } catch (e) {
       print("AN EXCEPTION OCCURED $e");
       throw Exception();
@@ -57,6 +73,7 @@ class User {
 
   static Future<http.Response> _makeRequest(String? token) async {
     try {
+      print('apppearrr');
       if (token == null) throw Exception();
 
       const String endpoint = "/api/client/";
