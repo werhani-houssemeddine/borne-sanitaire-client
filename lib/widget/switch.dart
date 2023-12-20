@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class CustomSwitch extends StatefulWidget {
   final void Function()? setActionState;
-  const CustomSwitch({super.key, this.setActionState});
+  final bool? prevState;
+  const CustomSwitch({super.key, this.setActionState, this.prevState});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -12,13 +13,14 @@ class CustomSwitch extends StatefulWidget {
 
 class _CustomSwitchState extends State<CustomSwitch>
     with SingleTickerProviderStateMixin {
-  bool isChecked = false;
+  late bool isChecked;
   final Duration _duration = const Duration(milliseconds: 370);
   late Animation<Alignment> _animation;
   late AnimationController _animationController;
 
   @override
   void initState() {
+    isChecked = widget.prevState ?? false;
     super.initState();
 
     _animationController =
@@ -61,35 +63,39 @@ class _CustomSwitchState extends State<CustomSwitch>
                     blurRadius: 12,
                     offset: const Offset(0, 8))
               ]),
-          child: Stack(
-            children: <Widget>[
-              Align(
-                alignment: _animation.value,
-                child: MakeGestureDetector(
-                  onPressed: () {
-                    setState(() {
-                      if (_animationController.isCompleted) {
-                        _animationController.reverse();
-                      } else {
-                        _animationController.forward();
-                      }
-                      if (widget.setActionState != null) {
-                        widget.setActionState!();
-                      }
-                      isChecked = !isChecked;
-                    });
-                  },
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
+          child: Transform.rotate(
+            angle:
+                widget.prevState == true ? -180 * (3.141592653589793 / 180) : 0,
+            child: Stack(
+              children: <Widget>[
+                Align(
+                  alignment: _animation.value,
+                  child: MakeGestureDetector(
+                    onPressed: () {
+                      setState(() {
+                        if (_animationController.isCompleted) {
+                          _animationController.reverse();
+                        } else {
+                          _animationController.forward();
+                        }
+                        if (widget.setActionState != null) {
+                          widget.setActionState!();
+                        }
+                        isChecked = !isChecked;
+                      });
+                    },
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         );
       },

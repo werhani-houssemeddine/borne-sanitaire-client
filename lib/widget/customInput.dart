@@ -20,6 +20,9 @@ class CustomInputField extends StatefulWidget {
   final String buttonTitle;
   final bool password;
   final TextInputType? keyboardType;
+  final String? errorMessage;
+  final IconData? prefixIcon;
+  final void Function()? onChanged;
 
   const CustomInputField({
     super.key,
@@ -32,6 +35,9 @@ class CustomInputField extends StatefulWidget {
     required this.validator,
     this.password = false,
     this.keyboardType,
+    this.errorMessage,
+    this.prefixIcon,
+    this.onChanged,
   });
 
   @override
@@ -67,8 +73,17 @@ class _CustomInputFieldState extends State<CustomInputField> {
     return null;
   }
 
+  Widget? setIcon() {
+    if (widget.password) return makeIcon(Icons.lock);
+
+    if (widget.prefixIcon != null) return makeIcon(widget.prefixIcon!);
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("REQUEST STATUS ${widget.requestStatus}");
     return Padding(
       padding: const EdgeInsets.only(bottom: 0, top: 16, left: 5, right: 5),
       child: Form(
@@ -77,6 +92,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
           children: [
             Row(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   // width: MediaQuery.o,
@@ -86,7 +102,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                     obscureText: widget.password && !_isObscure,
                     decoration: InputDecoration(
                       hintText: widget.hintText,
-                      prefixIcon: widget.password ? makeIcon(Icons.lock) : null,
+                      prefixIcon: setIcon(),
                       suffixIcon: togglePassword(),
                       focusColor: AppColors.primary,
                       focusedBorder: OutlineInputBorder(
@@ -103,8 +119,21 @@ class _CustomInputFieldState extends State<CustomInputField> {
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorText: widget.errorMessage,
                     ),
                     validator: widget.validator,
+                    onChanged: (value) {
+                      if (widget.onChanged != null) {
+                        widget.onChanged!();
+                      }
+                    },
                   ),
                 ),
                 if (widget.requestStatus != null)
@@ -112,7 +141,10 @@ class _CustomInputFieldState extends State<CustomInputField> {
                     width: 30,
                     height: 30,
                     padding: const EdgeInsets.all(8.0),
-                    child: _buildStatusIcon(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: _buildStatusIcon(),
+                    ),
                   )
               ],
             ),
@@ -149,7 +181,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
       return CircularProgressIndicator(color: Colors.greenAccent.shade400);
     } else if (widget.requestStatus == REQUEST_STATE.FAILLURE) {
       return const Icon(Icons.clear, color: Colors.red);
-    } else if (widget.requestStatus == REQUEST_STATE.FAILLURE) {
+    } else if (widget.requestStatus == REQUEST_STATE.SUCCESS) {
       return const Icon(Icons.check, color: Colors.green);
     } else {
       return const SizedBox.shrink();
