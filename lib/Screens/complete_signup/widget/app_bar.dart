@@ -17,9 +17,11 @@ class CompleteUserSignUpAppBar extends StatelessWidget {
     required onPressed,
     required link,
     required color,
+    required bool isClickable,
   }) {
     return MakeGestureDetector(
       onPressed: onPressed,
+      clickedCursor: isClickable,
       child: Text(
         link,
         style: TextStyle(
@@ -42,10 +44,12 @@ class CompleteUserSignUpAppBar extends StatelessWidget {
           makeAppBarLinks(
             onPressed: () => AutoRouter.of(context).replace(const HomeRoute()),
             link: "Skip",
+            isClickable: true,
             color: Colors.black45,
           ),
           makeAppBarLinks(
-            onPressed: () => handleSubmit(),
+            isClickable: isDone,
+            onPressed: isDone ? handleSubmit : () {},
             link: "done",
             color: isDone ? Colors.redAccent.shade400 : Colors.black45,
           ),
