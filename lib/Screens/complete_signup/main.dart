@@ -62,48 +62,47 @@ class CompleteUserSignUpConfigDevicee extends StatelessWidget {
   Widget build(BuildContext context) {
     final double currentWidth = MediaQuery.of(context).size.width;
 
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Card(
-          elevation: 3,
-          margin: EdgeInsets.symmetric(
-            vertical: 30,
-            horizontal: currentWidth * 0.045,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            width: currentWidth * 0.85,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Configure Your Device",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
+    return Form(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Card(
+            elevation: 3,
+            margin: const EdgeInsets.symmetric(
+              vertical: 30,
+              horizontal: 20,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              width: currentWidth - 30,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Configure Your Device",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    updatePhoneNumberWidget,
-                    deviceMaxVisitorsWidget,
-                    const SizedBox(height: 16.0),
-                    const SizedBox(height: 20),
-                  ],
-                )
-              ],
+                  const SizedBox(height: 16),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      updatePhoneNumberWidget,
+                      deviceMaxVisitorsWidget,
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
