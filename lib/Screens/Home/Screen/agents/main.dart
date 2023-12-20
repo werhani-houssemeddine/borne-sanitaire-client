@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/agent_details.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
-import 'package:borne_sanitaire_client/config.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/show_image.dart';
@@ -52,6 +51,7 @@ class AgentsScreen extends StatelessWidget {
             listOfSusspendedAgents: Agents.listOfSusspendedAgents(agents),
           );
         }
+
         //? If getAllAgents request is not success
         return const Center(child: CircularProgressIndicator.adaptive());
       },
@@ -135,12 +135,13 @@ class ListOfAgentRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Divider(),
           MakeGestureDetector(
             onPressed: () {
               print("Clicked $title");
             },
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
