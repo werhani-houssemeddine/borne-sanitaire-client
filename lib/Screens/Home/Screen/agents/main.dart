@@ -1,14 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/agent_details.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
+import 'package:borne_sanitaire_client/config.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/show_image.dart';
 import 'package:flutter/material.dart';
 
-class AgentScreen2 extends StatelessWidget {
-  final List<Agent> agents;
-  const AgentScreen2({Key? key, required this.agents}) : super(key: key);
-
-  _filterAgents() {
+class Agents {
+  static Map<String, List<Agent>> getFiltredAgent(List<Agent> agents) {
     List<Agent> listOfActifAgents = [];
     List<Agent> listOfSusspendedAgents = [];
 
@@ -18,12 +18,60 @@ class AgentScreen2 extends StatelessWidget {
           : listOfSusspendedAgents.add(agent);
     }
 
-    return [listOfActifAgents, listOfSusspendedAgents];
+    return {
+      "actif": listOfActifAgents,
+      "suspend": listOfSusspendedAgents,
+    };
   }
 
-  List<Agent> get listOfActifAgents => _filterAgents()[0];
-  List<Agent> get listOfSusspendedAgents => _filterAgents()[1];
-  List<Agent> get listOfPendingAgents => [];
+  static List<Agent> listOfActifAgents(List<Agent> agents) =>
+      getFiltredAgent(agents)["actif"]!;
+
+  static List<Agent> listOfSusspendedAgents(List<Agent> agents) =>
+      getFiltredAgent(agents)["suspend"]!;
+
+  static List<Agent> get listOfPendingAgents => [];
+}
+
+@RoutePage()
+class AgentsScreen extends StatelessWidget {
+  const AgentsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: AgentService.getAllAgents(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          List<Agent> agents = snapshot.data.data;
+
+          return AgentWidgets(
+            agents: agents,
+            listOfActifAgents: Agents.listOfActifAgents(agents),
+            listOfPendingAgents: Agents.listOfPendingAgents,
+            listOfSusspendedAgents: Agents.listOfSusspendedAgents(agents),
+          );
+        }
+        //? If getAllAgents request is not success
+        return const Center(child: CircularProgressIndicator.adaptive());
+      },
+    );
+  }
+}
+
+class AgentWidgets extends StatelessWidget {
+  const AgentWidgets({
+    super.key,
+    required this.agents,
+    required this.listOfActifAgents,
+    required this.listOfPendingAgents,
+    required this.listOfSusspendedAgents,
+  });
+
+  final List<Agent> agents;
+  final List<Agent> listOfActifAgents;
+  final List<Agent> listOfPendingAgents;
+  final List<Agent> listOfSusspendedAgents;
 
   @override
   Widget build(BuildContext context) {
@@ -31,37 +79,26 @@ class AgentScreen2 extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (agents.isEmpty) const Text("There is no agent add new ?"),
           if (agents.isNotEmpty)
-            SizedBox(
-              height: 150,
-              child: ListOfAgentRow(
-                title: "All Agents",
-                listOfAgent: [...agents, ...agents, ...agents],
-              ),
+            ListOfAgentRow(
+              title: "All Agents",
+              listOfAgent: agents,
             ),
           if (listOfActifAgents.isNotEmpty)
-            SizedBox(
-              height: 150,
-              child: ListOfAgentRow(
-                title: "Actif Agent",
-                listOfAgent: listOfActifAgents,
-              ),
+            ListOfAgentRow(
+              title: "Actif Agent",
+              listOfAgent: listOfActifAgents,
             ),
           if (listOfPendingAgents.isNotEmpty)
-            SizedBox(
-              height: 150,
-              child: ListOfAgentRow(
-                title: "Pending Agent",
-                listOfAgent: listOfPendingAgents,
-              ),
+            ListOfAgentRow(
+              title: "Pending Agent",
+              listOfAgent: listOfPendingAgents,
             ),
           if (listOfSusspendedAgents.isNotEmpty)
-            SizedBox(
-              height: 150,
-              child: ListOfAgentRow(
-                title: "Suspend Agent",
-                listOfAgent: listOfSusspendedAgents,
-              ),
+            ListOfAgentRow(
+              title: "Suspend Agent",
+              listOfAgent: listOfSusspendedAgents,
             ),
         ],
       ),
@@ -96,6 +133,7 @@ class ListOfAgentRow extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MakeGestureDetector(
             onPressed: () {
@@ -122,16 +160,13 @@ class ListOfAgentRow extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: listOfAgent != null ? showAgents() : [],
-                ),
-              ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: listOfAgent != null ? showAgents() : [],
             ),
           ),
         ],
@@ -152,13 +187,33 @@ class AgentWidget extends StatelessWidget {
     required this.id,
   });
 
+  Widget get imageWidget => ShowImage(
+        size: const Size(60, 60),
+        defaultAssets: 'assets/user.png',
+        onlinePictureSrc: profilePicture,
+        padding: 5,
+      );
+
+  Widget get usernameWidget => Center(
+        child: Text(
+          username,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+          softWrap: false,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 10,
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return MakeGestureDetector(
       onPressed: () {
         ShowModalContainer(
           context,
-          child: const AgentDetailsModal(),
+          child: AgentDetailsModal(agentId: id),
         );
       },
       child: Container(
@@ -168,25 +223,7 @@ class AgentWidget extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            ShowOnlineImage(
-              size: const Size(60, 60),
-              color: Colors.green,
-              urlImage: profilePicture,
-            ),
-            Center(
-              child: Text(
-                username,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 10,
-                ),
-              ),
-            )
-          ],
+          children: [imageWidget, usernameWidget],
         ),
       ),
     );
