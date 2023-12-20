@@ -1,7 +1,6 @@
 import 'dart:convert';
-
-import 'package:borne_sanitaire_client/Screens/Home/interface/agent_inerface.dart';
 import 'package:borne_sanitaire_client/Service/request.dart';
+import 'package:borne_sanitaire_client/Screens/Home/interface/agent_inerface.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:http/http.dart' as http;
 
@@ -75,6 +74,48 @@ class AgentService {
         status: GET_ALL_AGENT_INTERFACE.SERVER_ERROR,
         data: null,
       );
+    }
+  }
+
+  static Future getOneAgent(int agentId) async {
+    try {
+      var response =
+          await SecureRequest.get(endpoint: '/api/client/agent/one/$agentId/');
+
+      var permessionsResponse = await SecureRequest.get(
+          endpoint: 'api/client/agent/permession/get/$agentId/');
+
+      bool agentResponseStatus =
+          response.statusCode >= 200 && response.statusCode <= 299;
+      bool permessionResponseStatus = permessionsResponse.statusCode >= 200 &&
+          permessionsResponse.statusCode <= 299;
+
+      if (agentResponseStatus && permessionResponseStatus) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        Map<String, dynamic> responseBodyPerm =
+            jsonDecode(permessionsResponse.body);
+
+        if (responseBody.containsKey('data')) {
+          if (responseBodyPerm.containsKey('data')) {
+            Map<String, dynamic> data = responseBody['data'];
+            Map<String, dynamic> dataPerm = responseBodyPerm['data'];
+
+            return {
+              "email": data["agent_email"],
+              "user_name": data["user_name"],
+              "active": data["active"],
+              "profile_picture": data["profile_picture"],
+              "phone_number": data["phone_number"],
+              "created_at": data["created_at"],
+              "permessions": dataPerm["listOfPermessions"],
+              "manage_devices": dataPerm["manage_devices"],
+              "manage_agents": dataPerm["manage_agents"],
+            };
+          }
+        }
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }
