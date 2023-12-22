@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Service/current_user.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/interface.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/main.dart';
 import 'package:borne_sanitaire_client/Screens/complete_signup/service.dart';
@@ -70,6 +71,7 @@ class _CompleteUserSignUpWidgetState extends State<CompleteUserSignUpWidget> {
 
       if (updateResponse == COMPLETE_SIGN_UP_RESPONSE.SUCCESS) {
         if (context.mounted) {
+          User.getCurrentUserData(update: true);
           AutoRouter.of(context).navigate(const HomeRoute());
         }
         return;
@@ -111,11 +113,13 @@ class _CompleteUserSignUpWidgetState extends State<CompleteUserSignUpWidget> {
       padding: const EdgeInsets.all(8.0),
       height: MediaQuery.of(context).size.height * 0.95,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             mainAxisSize: MainAxisSize.min,
-            children: [appBar, updateUserProfilePhoto],
+            children: [
+              appBar,
+              updateUserProfilePhoto,
+            ],
           ),
           Expanded(
             child: CompleteUserSignUpConfigDevicee(
