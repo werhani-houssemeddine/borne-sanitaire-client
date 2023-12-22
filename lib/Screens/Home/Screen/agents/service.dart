@@ -1,15 +1,8 @@
 import 'dart:convert';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/interface.dart';
 import 'package:borne_sanitaire_client/Service/request.dart';
-import 'package:borne_sanitaire_client/Screens/Home/interface/agent_inerface.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:http/http.dart' as http;
-
-class AgentListServerResponse {
-  final GET_ALL_AGENT_INTERFACE status;
-  final List<Agent>? data;
-
-  AgentListServerResponse({required this.status, this.data});
-}
 
 class AgentService {
   static Future<ADD_AGENT_INTERFACE> addAgent(String agentEmail) async {
@@ -117,5 +110,36 @@ class AgentService {
     } catch (e) {
       print(e);
     }
+  }
+}
+
+class RequestAgentService {
+  static Future<PendingAgentServerResponse> getAllRequestAgent() async {
+    http.Response response =
+        await SecureRequest.get(endpoint: '/api/client/admin/request/all/');
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = jsonDecode(response.body);
+      if (body.containsKey('data')) {
+        var data = body["data"];
+
+        if (data is List) {
+          return PendingAgentServerResponse(
+              status: GET_ALL_AGENT_INTERFACE.SUCCESS,
+              data: data.isEmpty
+                  ? []
+                  : data.map((e) => PendingAgent.makePendingAgent(e)).toList());
+        } else {
+          return PendingAgentServerResponse(
+            status: GET_ALL_AGENT_INTERFACE.SUCCESS,
+            data: [],
+          );
+        }
+      }
+    }
+
+    return PendingAgentServerResponse(
+      status: GET_ALL_AGENT_INTERFACE.BAD_REQUEST,
+    );
   }
 }
