@@ -1,24 +1,43 @@
+import 'package:borne_sanitaire_client/config.dart';
 import 'package:flutter/material.dart';
 
-class ShowOnlineImage extends StatelessWidget {
+class ShowImage extends StatelessWidget {
+  final String? onlinePictureSrc;
+  final String defaultAssets;
   final Size size;
-  final Color color;
-  final String? urlImage;
+  final double? padding;
+  final Color? color;
 
-  const ShowOnlineImage({
+  const ShowImage({
     Key? key,
+    required this.defaultAssets,
     required this.size,
-    required this.color,
-    required this.urlImage,
+    this.onlinePictureSrc,
+    this.padding,
+    this.color,
   }) : super(key: key);
 
-  Image _showImage(String URL_IMAGE) {
+  Widget get getImage {
+    if (onlinePictureSrc == null) {
+      return Container(
+        padding: padding != null ? EdgeInsets.all(padding!) : null,
+        child: Image(
+          image: AssetImage(defaultAssets),
+          fit: BoxFit.cover,
+          height: size.height,
+          width: size.width,
+        ),
+      );
+    }
+
+    String fullPictureSrc =
+        "http://$BASE_URL/api/client/update$onlinePictureSrc";
+
     return Image.network(
-      URL_IMAGE,
+      fullPictureSrc,
       fit: BoxFit.cover,
-      scale: 0.5,
-      height: 90,
-      width: 90,
+      height: size.height,
+      width: size.width,
     );
   }
 
@@ -31,19 +50,18 @@ class ShowOnlineImage extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(size.height / 2),
         border: Border.all(
-          color: color,
+          color: color ?? Colors.black54,
           width: 2,
         ),
       ),
       child: ClipOval(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular((size.height - 4) / 2),
-            color: Colors.white,
-          ),
-          child: urlImage != null ? _showImage(urlImage!) : null,
+          child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular((size.height - 4) / 2),
+          color: Colors.white,
         ),
-      ),
+        child: getImage,
+      )),
     );
   }
 }
