@@ -6,9 +6,25 @@ enum ADD_AGENT_INTERFACE { SUCCESS, EMAIL_USED, MISSING_EMAIL, SERVER_ERROR }
 
 enum GET_ALL_AGENT_INTERFACE { SUCCESS, EMPTY, BAD_REQUEST, SERVER_ERROR }
 
-class AgentListServerResponse {
-  final GET_ALL_AGENT_INTERFACE status;
-  final List<Agent>? data;
+abstract class ServerResponse<T, U> {
+  final T status;
+  final U? data;
 
-  AgentListServerResponse({required this.status, this.data});
+  ServerResponse({required this.status, this.data});
+}
+
+class AgentListServerResponse
+    extends ServerResponse<GET_ALL_AGENT_INTERFACE, List<Agent>?> {
+  AgentListServerResponse({
+    required GET_ALL_AGENT_INTERFACE status,
+    List<Agent>? data,
+  }) : super(status: status, data: data);
+}
+
+class PendingAgentServerResponse
+    extends ServerResponse<GET_ALL_AGENT_INTERFACE, List<PendingAgent>?> {
+  PendingAgentServerResponse({
+    required GET_ALL_AGENT_INTERFACE status,
+    List<PendingAgent>? data,
+  }) : super(status: status, data: data);
 }
