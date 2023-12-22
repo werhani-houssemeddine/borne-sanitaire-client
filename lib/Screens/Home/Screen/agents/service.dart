@@ -142,4 +142,21 @@ class RequestAgentService {
       status: GET_ALL_AGENT_INTERFACE.BAD_REQUEST,
     );
   }
+
+  static Future<bool> deleteRequestAgent(String Id) async {
+    http.Response response = await SecureRequest.delete(
+        endpoint: '/api/client/admin/request/delete/$Id/');
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = jsonDecode(response.body);
+      if (body.containsKey('data')) {
+        Map<String, dynamic> data = body["data"];
+        if (data.containsKey('delete')) {
+          return data['delete'] == true;
+        }
+      }
+    }
+
+    return false;
+  }
 }
