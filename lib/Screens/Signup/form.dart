@@ -1,14 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
-import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/arrow_back.dart';
 import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 import 'signup_service.dart' show makeSignUpRequest;
 import 'response_service.dart' show SIGN_UP_RESULT;
 
-class SignUpForm extends StatelessWidget {
+@RoutePage()
+class SignUpFormRoute extends StatelessWidget {
   final String deviceId;
-  const SignUpForm({super.key, required this.deviceId});
+  final String email;
+
+  const SignUpFormRoute({
+    super.key,
+    required this.deviceId,
+    required this.email,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +29,11 @@ class SignUpForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SingupScreenAppBar(),
-            SignUpFormContainer(deviceId: deviceId),
+            const ArrowBack(),
+            SignUpFormContainer(
+              deviceId: deviceId,
+              email: email,
+            ),
           ],
         ),
       ),
@@ -31,47 +41,11 @@ class SignUpForm extends StatelessWidget {
   }
 }
 
-class SingupScreenAppBar extends StatelessWidget {
-  const SingupScreenAppBar({Key? key}) : super(key: key);
-
-  void Function() navigateToWelcomeScreen(BuildContext context) {
-    return () => AutoRouter.of(context).popUntilRoot();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 55,
-      child: Row(
-        children: [
-          MakeGestureDetector(
-            onPressed: navigateToWelcomeScreen(context),
-            child: Container(
-              height: 30,
-              width: 30,
-              padding: const EdgeInsets.only(left: 5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.arrow_back_ios,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class SignUpFormContainer extends StatefulWidget {
   final String deviceId;
-  const SignUpFormContainer({super.key, required this.deviceId});
+  final String email;
+  const SignUpFormContainer(
+      {super.key, required this.deviceId, required this.email});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -99,6 +73,8 @@ class _SignUpFormState extends State<SignUpFormContainer> {
   @override
   Widget build(BuildContext context) {
     final String deviceId = widget.deviceId;
+    final String email = widget.email;
+
     final double currentHeight = MediaQuery.of(context).size.height;
     final double currentWidth = MediaQuery.of(context).size.height;
 
@@ -130,12 +106,6 @@ class _SignUpFormState extends State<SignUpFormContainer> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormFieldBuilder(
-                  controller: UserController.emailController!,
-                  labelText: 'Email',
-                  prefixIcon: Icons.email,
-                  validator: Validator.validateEmail,
-                ).buildWithMargin(),
-                TextFormFieldBuilder(
                   controller: UserController.usernameController!,
                   labelText: 'Username',
                   prefixIcon: Icons.person,
@@ -154,6 +124,7 @@ class _SignUpFormState extends State<SignUpFormContainer> {
                 ).buildWithMargin(),
                 SubmitButton(
                   formKey: _formKey,
+                  email: email,
                   deviceId: deviceId,
                 ),
               ],
@@ -238,15 +209,16 @@ class TextFormFieldBuilder {
 class SubmitButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final String deviceId;
+  final String email;
 
   const SubmitButton({
     super.key,
     required this.formKey,
     required this.deviceId,
+    required this.email,
   });
 
   _submitForm({
-    required String email,
     required String password,
     required String username,
     required BuildContext context,
@@ -291,7 +263,6 @@ class SubmitButton extends StatelessWidget {
         onPressed: () {
           if (formKey.currentState!.validate()) {
             _submitForm(
-              email: UserController.emailController!.text.trim(),
               username: UserController.usernameController!.text.trim(),
               password: UserController.passwordController!.text.trim(),
               context: context,

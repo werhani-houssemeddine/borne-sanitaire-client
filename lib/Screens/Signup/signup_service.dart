@@ -101,3 +101,28 @@ Future<SIGN_UP_RESULT> makeSignUpRequest({
     return SIGN_UP_RESULT.SERVER_ERROR;
   }
 }
+
+Future<String?> signUpEmail({required String email}) async {
+  try {
+    http.Response response = await Request.post(
+        endpoint: '/api/client/authenticate/signup-email/',
+        payload: {'email': email});
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      return null;
+    }
+    Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+    if (responseBody.containsKey('data')) {
+      print(responseBody);
+      Map<String, dynamic> data = responseBody['data'];
+      if (data.containsKey('email')) {
+        return data['email'];
+      }
+    }
+    throw Exception('Unknown Server, try again ');
+  } catch (e) {
+    print(e);
+    return e.toString();
+  }
+}
