@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdateUserProfilePhoto extends StatefulWidget {
@@ -40,11 +42,8 @@ class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
   Widget showImage() {
     if (image == null) {
       // return const Image(image: AssetImage('assets/default_user1.png'));
-      return const Center(
-        child: Icon(
-          Icons.person,
-          size: 75,
-        ),
+      return Center(
+        child: SvgPicture.asset("assets/user.svg"),
       );
     } else {
       return Image.file(
@@ -74,7 +73,7 @@ class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(75),
-                    border: Border.all(width: 3, color: Colors.blue),
+                    border: Border.all(width: 2, color: Colors.blue),
                   ),
                 ),
                 ClipOval(
@@ -93,9 +92,10 @@ class _UpdateUserProfilePhotoState extends State<UpdateUserProfilePhoto> {
               child: Container(
                 width: 30,
                 height: 30,
-                padding: const EdgeInsets.all(3),
+                padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(width: 2, color: Colors.black),
                   color: const Color.fromARGB(255, 241, 251, 255),
                 ),
                 child: MakeGestureDetector(
