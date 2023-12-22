@@ -93,7 +93,7 @@ class GetDeviceDetails extends StatelessWidget {
         if (CurrentUser.instance!.phoneNumber != null)
           makeTableRow(
             "phone number",
-            CurrentUser.instance!.phoneNumber as String,
+            CurrentUser.instance!.phoneNumber.toString(),
           ),
         makeTableRow('Title', device.title!),
         makeTableRow("purchased at", device.purchaseDate),
