@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/agent_details.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/interface.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
@@ -7,6 +8,34 @@ import 'package:borne_sanitaire_client/widget/show_image.dart';
 import 'package:flutter/material.dart';
 
 class Agents {
+  static Future<Map<String, List>> init() async {
+    List<Agent>? agents = await Agents.getAgents();
+    List<PendingAgent>? pendingAgents = await Agents.getPendingAgents();
+
+    return {
+      "agents": agents ?? [],
+      "pendingAgents": pendingAgents ?? [],
+    };
+  }
+
+  static Future<List<Agent>?> getAgents() async {
+    AgentListServerResponse agentServiceResponse =
+        await AgentService.getAllAgents();
+
+    return agentServiceResponse.status == GET_ALL_AGENT_INTERFACE.SUCCESS
+        ? agentServiceResponse.data
+        : null;
+  }
+
+  static Future<List<PendingAgent>?> getPendingAgents() async {
+    PendingAgentServerResponse pendingAgentServiceResponse =
+        await RequestAgentService.getAllRequestAgent();
+
+    return pendingAgentServiceResponse.status == GET_ALL_AGENT_INTERFACE.SUCCESS
+        ? pendingAgentServiceResponse.data
+        : null;
+  }
+
   static Map<String, List<Agent>> getFiltredAgent(List<Agent> agents) {
     List<Agent> listOfActifAgents = [];
     List<Agent> listOfSusspendedAgents = [];
@@ -28,8 +57,6 @@ class Agents {
 
   static List<Agent> listOfSusspendedAgents(List<Agent> agents) =>
       getFiltredAgent(agents)["suspend"]!;
-
-  static List<Agent> get listOfPendingAgents => [];
 }
 
 @RoutePage()
@@ -39,15 +66,17 @@ class AgentsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: AgentService.getAllAgents(),
+      future: Agents.init(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          List<Agent> agents = snapshot.data.data;
+          print("snapshot ${snapshot.data}");
+          List<Agent> agents = snapshot.data['agents'];
+          List<PendingAgent> pendingAgents = snapshot.data['pendingAgents'];
 
           return AgentWidgets(
             agents: agents,
             listOfActifAgents: Agents.listOfActifAgents(agents),
-            listOfPendingAgents: Agents.listOfPendingAgents,
+            listOfPendingAgents: pendingAgents,
             listOfSusspendedAgents: Agents.listOfSusspendedAgents(agents),
           );
         }
@@ -70,7 +99,7 @@ class AgentWidgets extends StatelessWidget {
 
   final List<Agent> agents;
   final List<Agent> listOfActifAgents;
-  final List<Agent> listOfPendingAgents;
+  final List<PendingAgent> listOfPendingAgents;
   final List<Agent> listOfSusspendedAgents;
 
   @override
@@ -93,7 +122,7 @@ class AgentWidgets extends StatelessWidget {
           if (listOfPendingAgents.isNotEmpty)
             ListOfAgentRow(
               title: "Pending Agent",
-              listOfAgent: listOfPendingAgents,
+              listOfPendingAgents: listOfPendingAgents,
             ),
           if (listOfSusspendedAgents.isNotEmpty)
             ListOfAgentRow(
@@ -109,19 +138,36 @@ class AgentWidgets extends StatelessWidget {
 class ListOfAgentRow extends StatelessWidget {
   final String title;
   final List<Agent>? listOfAgent;
+  final List<PendingAgent>? listOfPendingAgents;
 
   const ListOfAgentRow({
     super.key,
     required this.title,
     this.listOfAgent,
+    this.listOfPendingAgents,
   });
 
-  List<Widget> showAgents() {
+  List<Widget> get showAgents {
+    if (listOfAgent == null || listOfAgent!.isEmpty) return [];
+
     return listOfAgent!
         .map((e) => AgentWidget(
               username: e.username,
               profilePicture: e.profilePicture,
               id: e.Id,
+              isAgent: true,
+            ))
+        .toList();
+  }
+
+  List<Widget> get showPendingAgents {
+    if (listOfPendingAgents == null || listOfPendingAgents!.isEmpty) return [];
+
+    return listOfPendingAgents!
+        .map((e) => AgentWidget(
+              username: e.email,
+              id: e.Id,
+              isAgent: false,
             ))
         .toList();
   }
@@ -167,7 +213,7 @@ class ListOfAgentRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: listOfAgent != null ? showAgents() : [],
+              children: [...showAgents, ...showPendingAgents],
             ),
           ),
         ],
@@ -177,15 +223,17 @@ class ListOfAgentRow extends StatelessWidget {
 }
 
 class AgentWidget extends StatelessWidget {
-  final String? profilePicture;
   final String username;
-  final int id;
+  final String? profilePicture;
+  final dynamic id;
+  final bool isAgent;
 
   const AgentWidget({
     super.key,
-    required this.profilePicture,
     required this.username,
-    required this.id,
+    required this.isAgent,
+    this.id,
+    this.profilePicture,
   });
 
   Widget get imageWidget => ShowImage(
@@ -214,7 +262,9 @@ class AgentWidget extends StatelessWidget {
       onPressed: () {
         ShowModalContainer(
           context,
-          child: AgentDetailsModal(agentId: id),
+          child: isAgent
+              ? AgentDetailsModal(agentId: id)
+              : PendingAgentModal(Id: id),
         );
       },
       child: Container(
