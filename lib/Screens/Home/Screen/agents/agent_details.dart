@@ -1,5 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:auto_route/auto_route.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/permessions.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:borne_sanitaire_client/widget/arrow_back.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/show_image.dart';
@@ -24,7 +28,40 @@ Future ShowModalContainer(BuildContext context, {required Widget child}) {
 }
 
 class PendingAgentModal extends StatelessWidget {
-  const PendingAgentModal({Key? key}) : super(key: key);
+  final String Id;
+  const PendingAgentModal({Key? key, required this.Id}) : super(key: key);
+
+  Widget makeButton({
+    required void Function() onPressed,
+    required String text,
+    required Color color,
+  }) {
+    return MakeGestureDetector(
+      onPressed: onPressed,
+      child: SizedBox(
+        height: 40,
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: color,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void deletePendingAgent(BuildContext context) async {
+    bool result = await RequestAgentService.deleteRequestAgent(Id);
+    if (result) {
+      if (context.mounted) {
+        AutoRouter.of(context).popAndPush(const AgentsRoute());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,42 +72,85 @@ class PendingAgentModal extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: const Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [],
-      ),
-    );
-  }
-}
-
-class AgentDetailsModal extends StatelessWidget {
-  const AgentDetailsModal({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
-    return Container(
-      height: size.height,
-      width: size.width,
-      color: AppColors.bgColor,
-      padding: const EdgeInsets.all(8.0),
-      child: const Column(
-        children: [
-          ArrowBack(),
-          Divider(),
-          AgentDetailsProfileSection(),
-          AgentDetailsLinkSection(),
-          Divider(),
-          AgentPermessions(),
+        children: <Widget>[
+          makeButton(
+            onPressed: () => deletePendingAgent(context),
+            text: "delete",
+            color: Colors.red,
+          ),
+          const Divider(),
+          makeButton(
+            onPressed: Navigator.of(context).pop,
+            text: "cancel",
+            color: Colors.black54,
+          ),
+          const Divider(),
         ],
       ),
     );
   }
 }
 
+class AgentDetailsModal extends StatelessWidget {
+  final int agentId;
+  const AgentDetailsModal({Key? key, required this.agentId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
+    return FutureBuilder(
+        future: AgentService.getOneAgent(agentId),
+        builder: (context, snapshoot) {
+          if (snapshoot.data != null) {
+            return Container(
+              height: size.height,
+              width: size.width,
+              color: AppColors.bgColor,
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  const ArrowBack(),
+                  const Divider(),
+                  AgentDetailsProfileSection(
+                    email: snapshoot.data['email'],
+                    username: snapshoot.data['user_name'],
+                    createdAt: snapshoot.data['created_at'],
+                    profilePicture: snapshoot.data['profile_picture'],
+                  ),
+                  const AgentDetailsLinkSection(),
+                  const Divider(),
+                  AgentPermessions(
+                    manage_devices: snapshoot.data["manage_devices"],
+                    manage_agents: snapshoot.data["manage_agents"],
+                    permessions: snapshoot.data["permessions"],
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        });
+  }
+}
+
 class AgentDetailsProfileSection extends StatelessWidget {
-  const AgentDetailsProfileSection({Key? key}) : super(key: key);
+  final String email;
+  final String username;
+  final String createdAt;
+  final String? profilePicture;
+  const AgentDetailsProfileSection({
+    required this.createdAt,
+    required this.email,
+    required this.profilePicture,
+    required this.username,
+    Key? key,
+  }) : super(key: key);
 
   Widget cellTextContent(
     String title, {
@@ -117,9 +197,9 @@ class AgentDetailsProfileSection extends StatelessWidget {
 
   List<TableRow> tableRows() {
     return [
-      singleRow("Email address", "houssemwuerhani@gmail.com"),
-      singleRow("Name", "Houssemeddine werhani"),
-      singleRow("Account from", "09/12/2023"),
+      singleRow("Email address", email),
+      singleRow("Name", username),
+      singleRow("Account from", createdAt),
     ];
   }
 
@@ -127,11 +207,11 @@ class AgentDetailsProfileSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ShowOnlineImage(
+        ShowImage(
+          defaultAssets: "assets/user.png",
           size: const Size(120, 120),
+          onlinePictureSrc: profilePicture,
           color: AppColors.primary,
-          urlImage:
-              "https://media.licdn.com/dms/image/D4D03AQFCT_zmnluMxw/profile-displayphoto-shrink_400_400/0/1669855115203?e=1707350400&v=beta&t=O7Bhxfag5L5ebfE-sY4ezrY3i2kI89S-FMSHGOCdkak",
         ),
         Expanded(
           child: Padding(
@@ -155,64 +235,51 @@ class AgentDetailsProfileSection extends StatelessWidget {
 class AgentDetailsLinkSection extends StatelessWidget {
   const AgentDetailsLinkSection({super.key});
 
+  void removeAgent() {}
+  void suspendAgent() {}
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 30, bottom: 10),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          AgentPhoneNumber(),
-          SuspendAgent(),
-          DeleteAgent(),
+          MakeAgentDetailsLink(
+            onPressed: () {},
+            svgSrc: "assets/phone.svg",
+            padding: 0,
+          ),
+          MakeAgentDetailsLink(
+            onPressed: suspendAgent,
+            svgSrc: "assets/suspend.svg",
+          ),
+          MakeAgentDetailsLink(
+            onPressed: removeAgent,
+            svgSrc: "assets/trash.svg",
+          ),
         ],
       ),
     );
   }
 }
 
-class AgentPhoneNumber extends StatefulWidget {
-  const AgentPhoneNumber({Key? key}) : super(key: key);
+class MakeAgentDetailsLink extends StatelessWidget {
+  final void Function() onPressed;
+  final String svgSrc;
+  final double? padding;
 
-  @override
-  _AgentDetailsState createState() => _AgentDetailsState();
-}
-
-class _AgentDetailsState extends State<AgentPhoneNumber> {
-  String phoneAsset = "assets/phone.svg";
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      //onEnter: (e) => setState(() => phoneAsset = "assets/reversed_phone.svg"),
-      //onExit: (e) => setState(() => phoneAsset = "assets/phone.svg"),
-      child: GestureDetector(
-        child: Container(
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          margin: const EdgeInsets.all(5.0),
-          child: SvgPicture.asset(
-            phoneAsset,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SuspendAgent extends StatelessWidget {
-  const SuspendAgent({super.key});
+  const MakeAgentDetailsLink({
+    Key? key,
+    required this.onPressed,
+    required this.svgSrc,
+    this.padding,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MakeGestureDetector(
-      onPressed: () {},
+      onPressed: onPressed,
       child: Container(
         height: 40,
         width: 40,
@@ -220,38 +287,13 @@ class SuspendAgent extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10.0),
         ),
-        padding: const EdgeInsets.all(5),
+        padding: EdgeInsets.all(padding ?? 5.0),
         margin: const EdgeInsets.all(5.0),
         child: SvgPicture.asset(
-          "assets/suspend.svg",
+          svgSrc,
           height: 32,
           width: 32,
-        ),
-      ),
-    );
-  }
-}
-
-class DeleteAgent extends StatelessWidget {
-  const DeleteAgent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MakeGestureDetector(
-      onPressed: () {},
-      child: Container(
-        height: 40,
-        width: 40,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        padding: const EdgeInsets.all(5.0),
-        margin: const EdgeInsets.all(5.0),
-        child: SvgPicture.asset(
-          "assets/trash.svg",
-          height: 32,
-          width: 32,
+          fit: BoxFit.cover,
         ),
       ),
     );
@@ -259,13 +301,29 @@ class DeleteAgent extends StatelessWidget {
 }
 
 class AgentPermessions extends StatelessWidget {
-  const AgentPermessions({super.key});
+  final bool manage_devices;
+  final bool manage_agents;
+  final List<dynamic> permessions;
+
+  const AgentPermessions({
+    super.key,
+    required this.manage_agents,
+    required this.manage_devices,
+    required this.permessions,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        children: [
+          SetAgentPermession(
+            manage_devices: manage_devices,
+            manage_agents: manage_agents,
+            permessions: permessions,
+          ),
+        ],
       ),
     );
   }
