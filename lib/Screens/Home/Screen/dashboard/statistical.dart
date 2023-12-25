@@ -50,8 +50,8 @@ class _StatisticalState extends State<Statistical> {
     socket.on('handshake', (data) {
       Map<String, dynamic> decodedData = jsonDecode(data);
       setState(() {
-        current_visitors = decodedData['current_visitors'] as int;
-        max_visitors = decodedData['max_visitors'] as int;
+        current_visitors = decodedData['current_visitors'];
+        max_visitors = decodedData['max_visitors'];
       });
     });
   }
@@ -143,7 +143,7 @@ class StatisticalDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String message = currentVisitors == 0 ? "no" : "$maxVisitors";
+    String message = currentVisitors == 0 ? "no" : "$currentVisitors";
     String quotion =
         maxVisitors == 0 ? "$currentVisitors" : "$currentVisitors/$maxVisitors";
     return Column(
@@ -156,14 +156,14 @@ class StatisticalDetails extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        if (currentVisitors != 0)
-          Text(
-            quotion,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-            ),
+        // if (currentVisitors != 0)
+        Text(
+          quotion,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
           ),
+        ),
       ],
     );
   }
