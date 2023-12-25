@@ -2,10 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/agent_details.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/interface.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:borne_sanitaire_client/widget/show_bottom_modal.dart';
 import 'package:borne_sanitaire_client/widget/show_image.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 class Agents {
@@ -89,6 +91,52 @@ class AgentsScreen extends StatelessWidget {
   }
 }
 
+class NoAgentWidget extends StatelessWidget {
+  const NoAgentWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Divider(),
+        const SizedBox(height: 20),
+        const Center(
+          child: Text(
+            "There is no agent add new ?",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+            ),
+          ),
+        ),
+        MakeGestureDetector(
+          child: Container(
+            width: double.maxFinite - 20,
+            margin: const EdgeInsets.all(20),
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Center(
+              child: Text(
+                "New Agent",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          onPressed: () => AddAgentBuilder(context),
+        ),
+      ],
+    );
+  }
+}
+
 class AgentWidgets extends StatelessWidget {
   const AgentWidgets({
     super.key,
@@ -109,7 +157,7 @@ class AgentWidgets extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (agents.isEmpty) const Text("There is no agent add new ?"),
+          if (agents.isEmpty) const NoAgentWidget(),
           if (agents.isNotEmpty)
             ListOfAgentRow(
               title: "All Agents",
