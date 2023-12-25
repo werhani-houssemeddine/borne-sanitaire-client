@@ -1,5 +1,5 @@
-import 'package:borne_sanitaire_client/Screens/Home/Service/agent.dart';
-import 'package:borne_sanitaire_client/Screens/Home/interface/agent_inerface.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/interface.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
 import 'package:flutter/material.dart';
 
 Future AddAgentBuilder(BuildContext context) {
