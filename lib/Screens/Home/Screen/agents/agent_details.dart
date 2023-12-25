@@ -11,22 +11,6 @@ import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-Future ShowModalContainer(BuildContext context, {required Widget child}) {
-  return showModalBottomSheet(
-    context: context,
-    backgroundColor: const Color.fromARGB(255, 241, 251, 255),
-    barrierColor: Colors.black87.withOpacity(0.5),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(15),
-      ),
-    ),
-    isScrollControlled: true,
-    isDismissible: false,
-    builder: (context) => child,
-  );
-}
-
 class PendingAgentModal extends StatelessWidget {
   final String Id;
   const PendingAgentModal({Key? key, required this.Id}) : super(key: key);
