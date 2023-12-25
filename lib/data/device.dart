@@ -1,3 +1,5 @@
+import 'package:borne_sanitaire_client/utils/convert_date.dart';
+
 class Device {
   final String purchaseDate;
   final String id;
@@ -17,20 +19,10 @@ class Device {
     required this.version,
   });
 
-  static String formatDateTime(String date) {
-    DateTime originalDateTime = DateTime.parse(date);
-
-    String formattedDate = '${originalDateTime.day.toString().padLeft(2, '0')}-'
-        '${originalDateTime.month.toString().padLeft(2, '0')}-'
-        '${originalDateTime.year}';
-
-    return formattedDate;
-  }
-
   static Device createDeviceInstance(Map<String, dynamic> map) {
     Device device = Device(
       purchaseDate: map['purchase_date'] != null
-          ? Device.formatDateTime(map['purchase_date'])
+          ? formatDateTime(map['purchase_date'])
           : '',
       id: map['id'] ?? '',
       maxVisitors: map['max_visitors'] ?? 0,
