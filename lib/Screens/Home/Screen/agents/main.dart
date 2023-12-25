@@ -4,6 +4,7 @@ import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/interface.dart
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/show_bottom_modal.dart';
 import 'package:borne_sanitaire_client/widget/show_image.dart';
 import 'package:flutter/material.dart';
 
@@ -260,7 +261,7 @@ class AgentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MakeGestureDetector(
       onPressed: () {
-        ShowModalContainer(
+        ShowModalBttomSheet(
           context,
           child: isAgent
               ? AgentDetailsModal(agentId: id)
