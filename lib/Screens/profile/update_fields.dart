@@ -47,8 +47,6 @@ class UpdateFieldState extends StatefulWidget {
 }
 
 class BaseUpdateFieldScreen extends State<UpdateFieldState> {
-  bool isDone = false;
-
   String getTtitleProperty(SCREEN? screen) {
     Map<SCREEN, String> title = {
       SCREEN.EDIT_PHONE_NUMBER: "Phone Number",
@@ -59,29 +57,17 @@ class BaseUpdateFieldScreen extends State<UpdateFieldState> {
   }
 
   Widget? setContent() {
-    void changeIsDoneToTrue() => setState(() => isDone = true);
-    void changeIsDoneToFalse() => setState(() => isDone = false);
-
-    void Function(bool) toggleIsDone() {
-      return (isInputvalide) {
-        if (isInputvalide) {
-          changeIsDoneToTrue();
-        } else {
-          changeIsDoneToFalse();
-        }
-      };
-    }
-
     SCREEN? screen = widget.getScreen();
     if (screen == null) return null;
 
     if (screen == SCREEN.EDIT_PASSWORD) {
-      return ChangePasswordScreen(isDoneCallback: toggleIsDone());
+      return const ChangePasswordScreen();
     } else if (screen == SCREEN.EDIT_PHONE_NUMBER) {
       return const ChangePhoneNumber();
     } else if (screen == SCREEN.EDIT_USERNAME) {
       return const ChangeNameScreen();
     }
+    return null;
   }
 
   @override
@@ -93,10 +79,7 @@ class BaseUpdateFieldScreen extends State<UpdateFieldState> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          UpdateFieldAppBar(
-            title: getTtitleProperty(widget.getScreen()),
-            done: isDone,
-          ),
+          UpdateFieldAppBar(title: getTtitleProperty(widget.getScreen())),
           const Divider(),
           if (content != null) content
         ],
@@ -107,11 +90,9 @@ class BaseUpdateFieldScreen extends State<UpdateFieldState> {
 
 class UpdateFieldAppBar extends StatelessWidget {
   final String title;
-  final bool done;
   const UpdateFieldAppBar({
     super.key,
     required this.title,
-    required this.done,
   });
 
   @override
@@ -148,22 +129,6 @@ class UpdateFieldAppBar extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   decoration: TextDecoration.none,
                   letterSpacing: 1,
-                ),
-              ),
-            ),
-          ),
-          MakeGestureDetector(
-            onPressed: () => done ? Navigator.of(context).pop() : () {},
-            clickedCursor: done,
-            child: SizedBox(
-              child: Center(
-                child: Text(
-                  "Done",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: done ? Colors.redAccent.shade400 : Colors.grey,
-                    decoration: TextDecoration.none,
-                  ),
                 ),
               ),
             ),
