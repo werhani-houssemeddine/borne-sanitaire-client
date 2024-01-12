@@ -96,6 +96,22 @@ class SecureRequest {
       body: payload,
     );
   }
+
+  static Future<http.Response> delete({
+    required String endpoint,
+    Map<String, String>? payload,
+    Map<String, String>? headers,
+  }) async {
+    if (CurrentUser.instance?.token == null) throw Exception();
+
+    headers = {...?headers, "Authorization": CurrentUser.instance!.token};
+
+    return await http.delete(
+      _makeURI(endpoint: endpoint),
+      headers: headers,
+      body: payload,
+    );
+  }
 }
 
 upload(File imageFile) async {
