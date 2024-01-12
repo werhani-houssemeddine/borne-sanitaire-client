@@ -1,10 +1,11 @@
+import 'package:borne_sanitaire_client/Screens/services/update_client.dart';
+import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
+import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
-  final void Function(bool) isDoneCallback;
   const ChangePasswordScreen({
     Key? key,
-    required this.isDoneCallback,
   }) : super(key: key);
 
   @override
@@ -14,6 +15,8 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _showPassword = false;
   void togglePassword() => setState(() => _showPassword = !_showPassword);
+  String? errorMessage;
+  bool success = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _currentPassword = TextEditingController();
@@ -32,35 +35,86 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      onChanged: () => {
-        widget.isDoneCallback(
-          _formKey.currentState?.validate() == true,
-        ),
-      },
-      child: Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        columnWidths: const {
-          0: FlexColumnWidth(1),
-          1: FlexColumnWidth(2),
-        },
+      child: Column(
         children: [
-          _buildRow(
-            "Current",
-            "Enter your current password",
-            _currentPassword,
-            _inputValidator(),
+          Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            columnWidths: const {
+              0: FlexColumnWidth(1),
+              1: FlexColumnWidth(2),
+            },
+            children: [
+              _buildRow(
+                "Current",
+                "Enter your current password",
+                _currentPassword,
+                _inputValidator(),
+              ),
+              _buildRow(
+                "New",
+                "Enter your new password",
+                _newPassword,
+                _inputValidator(),
+              ),
+              _buildRow(
+                "Confirm",
+                "Confirm your new password",
+                _confirmPassword,
+                _inputValidator(isThird: true),
+              ),
+            ],
           ),
-          _buildRow(
-            "New",
-            "Enter your new password",
-            _newPassword,
-            _inputValidator(),
+          Container(
+            margin: const EdgeInsets.all(10),
+            child: Center(
+              child: Text(
+                success
+                    ? "Password updated successfully"
+                    : (errorMessage ?? ""),
+                style: TextStyle(
+                  color: success ? Colors.greenAccent.shade400 : Colors.red,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+            ),
           ),
-          _buildRow(
-            "Confirm",
-            "Confirm your new password",
-            _confirmPassword,
-            _inputValidator(isThird: true),
+          MakeGestureDetector(
+            onPressed: () {
+              if (_formKey.currentState?.validate() == true) {
+                updatePassword(_currentPassword.text, _newPassword.text).then(
+                  (response) => {
+                    setState(
+                      () {
+                        response == null
+                            ? success = true
+                            : errorMessage = response;
+                      },
+                    )
+                  },
+                );
+              } else {
+                setState(() => errorMessage = "Something is wrong");
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              height: 55,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: const Center(
+                child: Text(
+                  "Confirm update password",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
