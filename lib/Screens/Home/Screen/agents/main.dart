@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/agent_details.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/interface.dart';
+import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/pending_agent.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Screen/agents/service.dart';
 import 'package:borne_sanitaire_client/Screens/Home/Widget/add_agent.dart';
 import 'package:borne_sanitaire_client/data/agent.dart';
@@ -11,13 +12,13 @@ import 'package:borne_sanitaire_client/widget/style.dart';
 import 'package:flutter/material.dart';
 
 class Agents {
-  static Future<Map<String, List>> init() async {
+  static Future<Map<String, List?>> init() async {
     List<Agent>? agents = await Agents.getAgents();
     List<PendingAgent>? pendingAgents = await Agents.getPendingAgents();
 
     return {
-      "agents": agents ?? [],
-      "pendingAgents": pendingAgents ?? [],
+      "agents": agents,
+      "pendingAgents": pendingAgents,
     };
   }
 
@@ -72,9 +73,14 @@ class AgentsScreen extends StatelessWidget {
       future: Agents.init(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          print("snapshot ${snapshot.data}");
-          List<Agent> agents = snapshot.data['agents'];
-          List<PendingAgent> pendingAgents = snapshot.data['pendingAgents'];
+          // print("snapshot ${snapshot.data}");
+          List<Agent> agents = snapshot.data['agents'] ?? [];
+          List<PendingAgent> pendingAgents =
+              snapshot.data['pendingAgents'] ?? [];
+
+          print("AGENTS $agents");
+          print("PENDING AGENTS $pendingAgents");
+          print(agents.runtimeType);
 
           return AgentWidgets(
             agents: agents,
@@ -157,7 +163,8 @@ class AgentWidgets extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (agents.isEmpty) const NoAgentWidget(),
+          if (agents.isEmpty && listOfPendingAgents.isEmpty)
+            const NoAgentWidget(),
           if (agents.isNotEmpty)
             ListOfAgentRow(
               title: "All Agents",
