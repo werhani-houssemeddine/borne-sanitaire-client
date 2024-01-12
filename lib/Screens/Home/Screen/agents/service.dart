@@ -39,9 +39,8 @@ class AgentService {
 
         bool error = responseData["error"];
         String state = responseData["state"];
-        if (error == false && state == "success") {
+        if (error == false && state.toLowerCase() == "success") {
           var data = responseData["data"];
-
           if (data is List) {
             return AgentListServerResponse(
               status: GET_ALL_AGENT_INTERFACE.SUCCESS,
@@ -100,7 +99,7 @@ class AgentService {
               "profile_picture": data["profile_picture"],
               "phone_number": data["phone_number"],
               "created_at": data["created_at"],
-              "permessions": dataPerm["listOfPermessions"],
+              "permessions": dataPerm["permessions"],
               "manage_devices": dataPerm["manage_devices"],
               "manage_agents": dataPerm["manage_agents"],
             };
@@ -109,6 +108,66 @@ class AgentService {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  static Future suspendAgent(int agentId) async {
+    try {
+      var response = await SecureRequest.put(
+          endpoint: '/api/client/agent/archieve/$agentId/');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        Map<String, dynamic>? requestResponse = responseBody['data'];
+        if (requestResponse != null && requestResponse['suspend'] == true) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  static Future restoreAgent(int agentId) async {
+    try {
+      var response = await SecureRequest.put(
+          endpoint: '/api/client/agent/dearchive/$agentId/');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        Map<String, dynamic>? requestResponse = responseBody['data'];
+        if (requestResponse != null && requestResponse['restore'] == true) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  static Future deleteAgent(int agentId) async {
+    try {
+      var response = await SecureRequest.delete(
+          endpoint: '/api/client/agent/delete/$agentId/');
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        Map<String, dynamic>? requestResponse = responseBody['data'];
+        if (requestResponse != null && requestResponse['delete'] == true) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 }
