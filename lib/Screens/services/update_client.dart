@@ -61,6 +61,32 @@ Future<String?> updatePhone(String phone) async {
   }
 }
 
+Future<String?> updatePassword(String current, String newPassword) async {
+  const String endpoint = "/api/client/update/password/";
+  try {
+    final http.Response response = await SecureRequest.put(
+      endpoint: endpoint,
+      payload: {
+        'current': current,
+        'new_password': newPassword,
+        'confirm_password': newPassword,
+      },
+    );
+
+    Map<String, dynamic> responseBody = jsonDecode(response.body);
+    if (responseBody.containsKey('data')) {
+      Map<String, dynamic> data = responseBody['data'];
+      if (data.containsKey('UNATHORIZED')) {
+        return 'Current password is wrong';
+      }
+    }
+
+    return null;
+  } catch (e) {
+    rethrow;
+  }
+}
+
 Future<http.Response> setMaxVisitors(
     String visitorNumber, String deviceId) async {
   final String endpoint = "/api/client/device/visitor/$deviceId";
