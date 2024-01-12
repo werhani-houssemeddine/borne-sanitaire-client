@@ -1,4 +1,6 @@
+import 'package:borne_sanitaire_client/Screens/profile/change_name.dart';
 import 'package:borne_sanitaire_client/Screens/profile/change_password.dart';
+import 'package:borne_sanitaire_client/Screens/profile/change_phone.dart';
 import 'package:borne_sanitaire_client/widget/gestor_detector.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +78,10 @@ class BaseUpdateFieldScreen extends State<UpdateFieldState> {
     if (screen == SCREEN.EDIT_PASSWORD) {
       return ChangePasswordScreen(isDoneCallback: toggleIsDone());
     } else if (screen == SCREEN.EDIT_PHONE_NUMBER) {
-    } else if (screen == SCREEN.EDIT_USERNAME) {}
+      return const ChangePhoneNumber();
+    } else if (screen == SCREEN.EDIT_USERNAME) {
+      return const ChangeNameScreen();
+    }
   }
 
   @override
