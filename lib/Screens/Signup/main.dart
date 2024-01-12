@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:borne_sanitaire_client/Screens/Signup/expired_device.dart';
-import 'package:borne_sanitaire_client/Screens/Signup/form.dart';
 import 'package:borne_sanitaire_client/Screens/Signup/response_service.dart';
 import 'package:borne_sanitaire_client/Screens/Signup/signup_service.dart';
+import 'package:borne_sanitaire_client/routes/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'dart:async';
@@ -42,6 +42,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -53,22 +58,6 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
-
-  /*Widget _buttonGroup() {
-    return Row(
-      children: <Widget>[
-        SizedBox(
-          height: 30,
-          child: InkWell(
-            onTap: _scan,
-            child: const Card(
-              child: Text("Scan"),
-            ),
-          ),
-        ),
-      ],
-    );
-  }*/
 
   Future<String?> _scan() async {
     await Permission.camera.request();
@@ -85,7 +74,8 @@ class _MyAppState extends State<MyApp> {
 
           return _accessToSignupForm(data);
         } else {
-          return const Text("Will be here as soon as possible 😊");
+          AutoRouter.of(context).popUntilRouteWithName(WelcomeRoute.name);
+          return const SizedBox();
         }
       } else {
         return _ProgressIndicator();
@@ -104,7 +94,9 @@ class _MyAppState extends State<MyApp> {
             CHECKING_DEVICE response = snapshot.data as CHECKING_DEVICE;
 
             if (response == CHECKING_DEVICE.VALID_DEVICE) {
-              return SignUpForm(deviceId: deviceId);
+              AutoRouter.of(context)
+                  .replace(CheckEmailAddressRoute(deviceId: deviceId));
+              return const SizedBox();
             } else {
               return const ExpiredDeviceWidget();
             }
