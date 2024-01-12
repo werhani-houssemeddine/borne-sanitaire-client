@@ -14,8 +14,14 @@ Future<LOGIN_RESPONSE> submitLoginForm(
     http.Response response = await _postRequest(url, payload);
     Map<String, dynamic> responseBody = jsonDecode(response.body);
 
+    if (responseBody.containsKey('data')) {
+      if (responseBody['data'].containsKey('verification code')) {
+        return LOGIN_RESPONSE.REDIRECT_OTP;
+      }
+    }
+
     if (response.statusCode == 401) {
-      throw LOGIN_RESPONSE.INCORRECT_CREDENTIALS;
+      return LOGIN_RESPONSE.INCORRECT_CREDENTIALS;
     } else if (response.statusCode >= 500) {
       throw LOGIN_RESPONSE.SERVER_ERROR;
     } else {
